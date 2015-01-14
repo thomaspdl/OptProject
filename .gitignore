@@ -5,3 +5,5 @@ SaddlePoint.*
 *.log
 *.pdf
 *.gz
+*.toc
+*.fdb_latexmk
