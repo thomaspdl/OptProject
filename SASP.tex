@@ -1,0 +1,642 @@
+\documentclass[10pt]{article}
+\usepackage{amsfonts}
+\usepackage{amsmath,amssymb}
+\usepackage{amsthm}
+\usepackage[pdftex]{graphicx}
+\usepackage[OT1]{fontenc}
+\usepackage{graphicx}
+\usepackage[margin=1in]{geometry}
+\setlength\parindent{0pt}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+
+\begin{document}
+
+\title{Optimization project}
+\author{Thomas Pumir}
+\maketitle
+\numberwithin{equation}{section}
+
+\newcommand{\mb}[1]{ \mathbf{ #1}}
+\newcommand{\hmb}[1]{ \hat{\mathbf{ #1}}}
+\newcommand{\bb}[1]{\mathbb{ #1}}
+\newcommand{\mc}[1]{\mathcal{ #1}}
+\newtheorem{thm}{Theorem}
+\newtheorem{rmk}{Remark}
+\newtheorem{cor}{Corrolary}
+\newtheorem{asmp}{Assumption}
+\newtheorem{Def}{Definition}
+
+
+\section{Background}
+
+In this work, we focus on the study of some optimization methods for both deterministic and stochastic Saddle Point Problems.
+We focus our work on primal \emph{Dual Methods} for a particular class of problems.
+This study is conducted in order to, later, apply those techniques to the resolution of Approximate Dynamic Programming.
+That is why we try to formulate Dynamic Programming problem in the framework of the optimisation methods we study.
+
+This survey is organised as follows. We first study a general method solving a  stochastic minmax problem presented in\cite{NemirovskiRubinstein}.
+We then extend our study to an \emph{accelerated method}, in both the deterministic \cite{ChambollePock} and stochastic case \cite{ChenLanOuyang}.
+
+Another part of this work consists of using those results in order to apply them to the resolution of the Bellman equation via  an approximate Linear Program.
+
+
+
+\section{A general Problem}
+
+\subsection{Setting}
+
+Given a function $\Phi$ we study the general problem (that we call this problem the Primal Problem):
+$$
+\boxed{ (P): \min_{x \in X}\max_{y \in Y} \Phi(x,y) }
+$$
+
+Under the two following assumptions:
+
+\begin{itemize}
+\item A)$X$ and $Y$ are convex, compact sets.\\ $\Phi$ is convex in the first variable, concave in the second variable and Lipschitz on $X \times Y$
+\item B) $\Phi$ is not necessarily differentiable in each of its variables but $\partial_{x} \Phi(x,y) \neq  \emptyset $ and $\partial_{y} \Phi(x,y) \neq  \emptyset $
+%$\nabla_{x}\Phi(x,z)$ and $\nabla_{x}\Phi(x,y)$ are not directly accessibles (THEY DO NOT NECCESSARILY EXIST)
+ we only have access to $g_{x}$ and $g_{y}$ such that $\forall (x,y) \in X \times Y$: \\
+$$\mathbb{E}[g_{x}(x,y)] \in \partial_{x} \Phi(x,y) $$
+$$\mathbb{E}[g_{y}(x,y)] \in \partial_{y} \Phi(x,y) $$
+
+Additionally, we suppose that:
+
+$$
+\mathcal{L} = D_{X} \sup_{(x,y) \in X \times Y} \sqrt{\mathbb{E}[\lVert g_{x}(x,y) \rVert^{2}]}+ D_{Y} \sup_{(x,y) \in X \times Y}\sqrt{\mathbb{E}[\lVert g_{y}(x,y) \rVert^{2}]} < \infty
+$$
+
+Where $D_{X}$ and $D_{Y}$ are the euclidian diameters of $X$ and $Y$.
+
+\end{itemize}
+
+The first problem is called the \text{primal} problem. We also define the \text{dual} problem
+
+$$
+(D): \max_{y \in Y}\min_{x \in X} \Phi(x,y)
+$$
+
+Under Assumption A), by the \emph{MinMax Theorem}, we have 
+
+$$
+\max_{y \in Y}\min_{x \in X} \Phi(x,y) = \min_{x \in X}\max_{y \in Y} \Phi(x,y)
+$$
+
+Looking for a solution of $(P)$ is equivalent to finding a solution of $(D)$.
+
+Now if we define:
+\begin{itemize}
+\item $\overline{\Phi}(x) = \max_{y \in Y}\Phi(x,y)$
+\item $\underline{\Phi}(y) = \min_{x \in X}\Phi(x,y)$
+\end{itemize}
+
+
+
+We can set set up  an accuracy measure:
+$$
+\boxed{ \varepsilon(x,y) = [\overline{\Phi}(x) - \min_{X}\overline{\Phi}] + [\max_{Y}\underline{\Phi} - \underline{\Phi}(y)] }
+$$
+
+Since $\min_{X}\overline{\Phi} = \max_{Y}\underline{\Phi}$ (by  strong duality) we have:
+$$
+\boxed{\varepsilon(x,y) = \overline{\Phi}(x) - \underline{\Phi}(y)}
+$$
+
+
+\subsection{Motivations}
+
+We keep in mind one particular application.
+In Dynamic Programming (DP), the solution of the Bellman equation
+$$
+V^{*}(s) = \max_{a \in \mathcal{A}} \{ R(s,a) + \gamma \sum_{s^{'} \in \mathcal{S}} \mathbb{P}(s^{'} | s,a)V^{*}(s^{'}) \}
+$$
+
+can be formulated under the form of a Linear Program.\\
+
+Where:
+\begin{itemize}
+\item $\mathcal{A}$ the set of possible actions.
+\item $\mathcal{S}$ the set of possible states.
+\item $\mathbb{P}(s^{'} | s,a)$ is the probability of transition from $s$ to $s^{'}$ when the action a is chosen.
+\end{itemize}
+
+
+
+Indeed $V^{*}$ can be seen as a vector of $\mathbb{R}^{|\mathcal{S}|}$, and in that case the previous equation becomes:
+\begin{equation}\label{MLSDP}
+\begin{array}{cl}
+\min_{V^{*} \in \mathbb{R}^{|\mathcal{S}|}} & \sum_{s} V^{*}(s)  \\
+\text{s.t.} & \forall (s, a)\in \mathcal{S} \times \mathcal{A}, \hspace{0.1cm} V^{*}(s) \geq R(s,a) + \gamma \sum_{s^{'}}\mathbb{P}(s^{'}| s,a )V^{*}(s^{'})\\
+\end{array}
+\end{equation}
+
+As every Linear Program, this problem can be reduced to the resolution of a Saddle point Problem via its Lagrangian:
+$$
+\min_{V^{*}}\max_{\lambda \geq 0}\{ \sum_{s} V^{*}(s) + \sum_{a,s}\lambda_{a,s}[R(s,a) + \gamma \sum_{s^{'}}\mathbb{P}(s^{'}| s,a )V^{*}(s^{'}) - V^{*}(s)] \}
+$$
+However, since the set of space and actions is usually extremely large, this Linear Program suffers from the curse of dimensionnality.
+
+One way to overcome this issue is to consider that $V^{*}(s)$ can be approximated by a linear combination of basis function.
+
+This approximation yields \emph{noise} in the value of all the functions and \emph{thus} yields noise in the approximation of the gradients.
+
+
+
+\subsection{Algorithm: Stochastic Approximation for Saddle Point (SASP) Problems}
+
+A first algorithm is proposed in \cite{NemirovskiRubinstein} to solve Saddle Point Problems
+
+
+Let's define the following functions:
+\begin{itemize}
+\item $$\pi_{X \times Y}[x,y] = \begin{pmatrix} \arg\min_{u \in X}\lVert x - u \rVert_{2}^{2} \\ \arg\min_{v \in Y}\lVert y - v \rVert_{2}^{2} \end{pmatrix}$$
+
+The projection on the product of the two sets $X$ and $Y$.
+
+\item $$\psi(x,y;\omega) = \begin{pmatrix} \rho_{X} g_{x} \\ -\rho_{Y} g_{y}  \end{pmatrix}$$
+
+Where $\rho_{X}$ and $\rho_{Y}$ are two \emph{adequately} chosen parameters.
+
+\end{itemize}
+
+
+\vspace{0.5cm}
+
+Then the algorithm to solve the stochastic saddle point problem is simply:
+
+\vspace{0.5cm}
+
+
+
+
+\begin{itemize}
+\item Pick $x_{0} \in X$ and $y_{0} \in Y$
+\item $\begin{pmatrix} x_{t+1} \\ y_{t+1} \end{pmatrix} = \pi_{X \times Y}[\begin{pmatrix} x_{t} \\ y_{t} \end{pmatrix} - \gamma_{t}\psi(x_{t},y_{t};\omega)]$
+\item Return 
+$$
+\begin{pmatrix} x^{t} \\ y^{t} \end{pmatrix} = \dfrac{1}{t - \tau_{*}(t) + 1}\sum_{\tau = \tau_{*}(t)}^{t}\begin{pmatrix} x_{\tau} \\ y_{\tau} \end{pmatrix}
+$$
+\end{itemize}
+
+
+Of course this algorithm depends on some parameters. The choice of those parameters has an influence on the convergence of the algorithm. We analyse those parameter as well as the convergence of the algorithm below.
+
+\subsection{Analysis of the Convergence}
+
+\begin{thm}
+
+Under assumptions A), B) and if we choose $\gamma_{t} = C.t^{-\alpha}$
+
+Then
+
+$$
+\mathbb{E}[\varepsilon(x^{N},y^{N})] \leq [D_{X}^{2}\rho_{X}^{-1} + D_{y}^{2}\rho_{Y}^{-1}]\dfrac{N^{\alpha}}{C(N - \tau_{*}(N) + 1)} +  \dfrac{\mathcal{L}}{\sqrt{N - \tau_{*}(N) + 1}}+ C\mathcal{L}^{2}[\rho_{X}D_{X}^{-2} + \rho_{Y}D_{Y}^{-2}]\tau_{*}^{-\alpha}(N)
+$$
+
+\end{thm}
+
+
+Remark: 
+
+\begin{cor}
+Optimizing over the prameters yields:
+ $\rho_{X} = D_{X}^{2}$,
+$\rho_{Y} = D_{Y}^{2}$,
+$\tau_{*}(t) = \dfrac{t}{2}$,
+$\alpha = \dfrac{1}{2}$,
+$C = \dfrac{2}{\mathcal{L}}$,
+
+Giving:
+$$
+\boxed{ \mathbb{E}[\varepsilon(x^{N},y^{N})]  \leq 10\mathcal{L} N^{-\frac{1}{2}} }
+$$
+\end{cor}
+
+
+The previous result uses only fixed step sizes, i.e. the step sizes are not adapted at each iteration.
+In fact, the same kind of results apply when the step sizes are updated at each iteration.
+
+More particularly, if we add the assumption:
+
+\begin{itemize}
+\item C) For $t$, $C_{t}$ depends only on the observations collected at the first steps, i.e. 
+$$C_{t} = f\big(g_{x}(x^{1},y^{1}),g_{y}(x^{1},y^{1}),...,g_{x}(x^{t-1},y^{t-1}),g_{y}(x^{t-1},y^{t-1})\big)$$
+and 
+$$
+C_{*} \leq C_{t} \leq C^{*}
+$$
+Where $C_{*}$ and $C^{*}$ being two arbitrary constants,
+
+\end{itemize}
+
+then the following holds:
+
+\begin{thm}
+If assumptions $A)$, $B)$ and $C)$ hold and if we choose the step size in the SASP as $\gamma_{t} = C_{t}t^{-\alpha}$,
+$\rho_{X} = D_{X}^{2}$, $\rho_{Y} = D_{Y}^{2}$ and $\tau^{*}(t) = \dfrac{t}{2}$, then:
+
+\begin{align*}
+\mathbb{E}[\varepsilon(x^{N},y^{N})] &\leq [D_{X}^{2}\rho_{X}^{-1} + D_{Y}^{2}\rho_{Y}^{-1} ][1 + \dfrac{1}{2C^{*}}\sum_{}^{N}\sup_{\tau \leq t} | C_{\tau} - C_{\tau-1}|]
+[\dfrac{N^{\alpha}}{C_{*}(N - \tau_{*}(N) + 1)}] \\ 
+&+ \dfrac{\mathcal{L}}{\sqrt{N - \tau_{*}(N)+ 1}} + \dfrac{C^{*}\mathcal{L}[\rho_{X}D_{X}^{-2} + \rho_{Y}D_{Y}^{-2}]}{\tau_{*}^{\alpha}(N)}
+\end{align*}
+\end{thm}
+
+
+The proofs of Theorem 1 and 2 are somehow similar.
+We give here a brief overview of those two proofs.
+
+\begin{proof}
+
+First we introduce a dissimilarity measure
+$$
+g((\overline{x},\overline{y})) = 
+$$
+
+\end{proof}
+
+\subsection{Online version of the algorithm}
+
+In our setting, to \emph{optimize} the parameters, we need to have access to some quantities dependent on the problem geometry of the constraints of the problem (e.g. $\mathcal{L}$, $D_{X}$ and $D_{Y}$).
+
+For instance
+$$
+\mathcal{L} = D_{X} \sup_{(x,y) \in X \times Y} \sqrt{\mathbb{E}[\lVert g_{x}(x,y) \rVert_{2}^{2}]} + 
+D_{Y} \sup_{(x,y) \in X \times Y} \sqrt{\mathbb{E}[\lVert g_{y}(x,y) \rVert_{2}^{2}]}
+$$
+
+cannot be computed exactly.
+Therefore we approximate $\mathcal{L}$ with  
+$$
+L_{t} = D_{X}\sqrt{\dfrac{1}{t}\sum_{\tau=1}^{t}\kappa_{x}(\lVert g_{x}^{\tau} \rVert_{2})^{2}} + D_{Y}\sqrt{\dfrac{1}{t}\sum_{\tau=1}^{t}  \kappa_{y}(\lVert g_{y}^{\tau} \rVert_{2})^{2}}
+$$
+
+$\kappa_{x}$ and $\kappa_{y}$ are two truncation function.
+(e.g. $\kappa_{s}(t) = A_{s}^{-}1_{ t < A_{s}^{-}}(t) + A_{s}^{+}1_{ t \geq A_{s}^{+}}(t) + t 1_{ [A_{s}^{-}, A_{s}^{+}]}(t)$).
+We truncate the sample variances to avoid too large or too small fluctuations.
+%
+%$$
+%\gamma_{t} = C_{t}t^{-\frac{1}{2}}
+%$$
+%$$
+%C_{t} = \dfrac{2}{L_{t}}
+%$$
+%
+%With 
+%$$
+%L_{t} = D_{X}\sqrt{\dfrac{1}{t}\sum_{\tau=1}^{t}\lVert g_{x}^{\tau} \rVert_{2}^{2}} + D_{Y}\sqrt{\dfrac{1}{t}\sum_{\tau=1}^{t}  \lVert g_{y}^{\tau} \rVert_{2}^{2}}
+%$$
+
+\subsection{Discussion on the algorithm}
+
+\subsection{Numerical results}
+
+We consider the somehow standard min max problem:
+$$
+\min_{x}\max_{y} f_{s}(x,y)
+$$
+with $f_{s}(x,y) = (1 - 2y)(x - s) + \dfrac{1}{2}(x - s)^{2} - \dfrac{1}{2}s^{2} $
+
+We have 
+
+\begin{itemize}
+\item $\partial_{x} f_{s}(x,y) = 1 - 2y + x - s$
+\item $\partial_{y} f_{s}(x,y) = -2x + 2s$
+\end{itemize}
+
+The addition of noise gives
+
+\begin{itemize}
+\item $g_{x} f_{s}(x,y) = 1 - 2y + x - s - \omega$
+\item $g_{y} f_{s}(x,y) = -2x + 2s + 2\omega$
+\end{itemize}
+
+with $\omega \sim \mathcal{N}(0,1)$
+
+\newpage
+
+\section{ A specific Example of Saddle Point Problem}
+
+We now consider a particular  non smooth saddle point problem.
+
+\subsection{Introduction}
+
+In many applications, particularly imaging some saddle point problem occur. The following problem is a good example of such a problem.
+
+If we define:
+$$
+f(x) = \max_{y \in Y} \{ G(x) + (Kx,y) - J(y) \} 
+$$
+
+and if we are looking for the minimum of the of $f$ over the set $X$, the optimisation problem becomes a saddle point problem.
+
+
+\begin{equation}\label{SPPpart}
+\min_{x \in X} f(x) = \min_{x \in X}\max_{y \in Y} \{ G(x) + (Kx,y) - J(y)\} = \min_{x \in X} (G(x) + \max_{y \in Y} \{  (Kx,y) - J(y)\}) = \min_{x \in X} (G(x) + J^{*}(Kx))
+\end{equation}
+
+
+
+Where $J^{*}$ is the Fenchel conjugate of $J$.
+
+
+We suppose that G is strongly convex, i.e. that:
+
+$$
+G(y) - G(x) - \langle \nabla G(x),y - x\rangle \leq \dfrac{L_{G}}{2} \lVert x - y \rVert_{2}^{2}
+$$
+
+
+
+
+This implies that strong duality holds (assumption A) holds).
+$$
+\min_{x \in X}\max_{y \in Y} \{ G(x) + (Kx,y) - J(y)\} = \min_{x \in X}\max_{y \in Y}\min_{x \in X} \{ G(x) + (Kx,y) - J(y)\}
+$$
+
+Several Primal Dual algorithms have been derived on this subject.
+We give a brief summary of the results below.
+
+We distinguish 
+
+\begin{itemize}
+\item the \emph{Deterministic} case: some values of the sub gradients are available
+\item the \emph{Stochastic} case:  some noisy values of the sub gradients are available. 
+The expected values being the actual sub gradients.
+\end{itemize}
+
+\subsection{Motivation}
+
+Now if we still consider the case of the LP associated to the resolution of Dynamic Programming,
+we have to solve the following saddle point problem
+
+$$
+\min_{V^{*}}\max_{\lambda \geq 0}\{ \sum_{s} V^{*}(s) + \sum_{a,s}\lambda_{a,s}[R(s,a) + \gamma \sum_{s^{'}}\mathbb{P}(s^{'}| s,a )V^{*}(s^{'}) - V^{*}(s)] \}
+$$
+
+This problem can exactly be written in the previous form.
+
+
+With 
+
+\begin{itemize}
+\item First we can notice that the set of $(V^{*}(s))_{s \in \mathcal{S}}$ 
+can be seen as a a vector of $\mathbb{R}^{\mathcal{S}}$. In this case we can define
+$$G(V^{*}) = 1^{T}V^{*} = \sum_{s} V^{*}(s)$$
+\item The second term 
+$$
+\sum_{a,s}\lambda_{a,s}[R(s,a) + \gamma \sum_{s^{'}}\mathbb{P}(s^{'}| s,a )V^{*}(s^{'}) - V^{*}(s)]
+$$
+can be seen as a scalar product between $(\lambda)_{a,s}$ and $(R(s,a) + \gamma \sum_{s^{'}}\mathbb{P}(s^{'}| s,a )V^{*}(s^{'}) - V^{*}(s))_{a,s}$.
+
+\end{itemize}
+
+\subsection{ Review of the results on Saddle Points Problems: }
+
+
+In this section, we propose a review of the optimisation algorithms existing to solve problem \ref{SPPpart}, in both the deterministic and the stochastic case.
+
+\subsubsection{Deterministic SPP: }
+
+
+
+\begin{itemize}
+
+\item By non smoothness of the objective function in general, applying a classic sub gradient method \cite{YudinNemirovski} yield a rate of convergence of
+$$
+O(\dfrac{1}{\sqrt{N}})
+$$
+
+\item In \cite{Nesterov}, Nesterov proposes to approximate the objective function by a smooth function and then apply an accelerated gradient method yielding, assuming that $X$ and $Y$ are compact, a rate of convergence of:
+$$
+O(\dfrac{L_{G}}{N^2} + \dfrac{L_{K}}{N})
+$$
+
+\item In \cite{ChambollePock}, a Primal Dual Method is proposed that achieves the following convergence rate:
+$$
+O(\dfrac{L_{G} + L_{K}}{N})
+$$
+\item A method achieving the optimal rate of convergence consists of an accelerated version of the primal dual method developed in \cite{ChenLanOuyang}.
+Moreover, this method is shown to work in the case where $X$ and $Y$ are non bounded.
+The obtained rate of convergence is:
+
+$$
+O(\dfrac{L_{G}}{N^2} + \dfrac{L_{K}}{N})
+$$
+
+
+\end{itemize}
+
+In the following, we focus on the last method, achieving the optimal convergence rate.
+
+%
+%In \cite{ChenLanOuyang}, an Accelerated Primal Dual (APD) algorithm is proposed, that achieves such a bound (in the deterministic case).
+
+
+
+
+\subsubsection{ Stochastic SPP: }
+\begin{itemize}
+\item Mirror descent stochastic Approximation:
+
+$$
+O((L_{G} + L_{K} + \sigma_{x} + \sigma_{y})\dfrac{1}{\sqrt{N}})
+$$
+
+\item Stochastic Mirror Prox
+
+$$
+O(\dfrac{L_{G} + L_{K}}{N} + \dfrac{\sigma_{x} + \sigma_{y}}{\sqrt{N}})
+$$
+
+\item Accelerated Stochastic Approximation
+
+$$
+O(\dfrac{L_{G}}{N^{2}}) + (L_{K} + \sigma_{x} + \sigma_{y})\dfrac{1}{\sqrt{N}}
+$$
+\end{itemize}
+
+In \cite{ChenLanOuyang}, a stochastic version of the APD method is proposed that achieves the lower bound on the rate 
+of convergence
+$$
+O(\dfrac{L_{G}}{N^{2}} + \dfrac{L_{K}}{N} + \dfrac{\sigma_{x} + \sigma_{y}}{\sqrt{N}})
+$$
+
+%\subsection{Contribution of the paper: }
+%
+%\begin{itemize}
+%\item Accelerated Primal Dual (APD) method for deterministic SPP.\\
+%Idea: add a multi-step acceleration scheme into the primal dual method
+%Rates of convergence: optimal $O(\dfrac{L_{G}}{N^{2}} + \dfrac{L_{K}}{N})$
+%\item Stochastic version of APD method.\\
+%Achieves the lower bound on the rate of convergence
+%$$
+%O(\dfrac{L_{G}}{N^{2}} + \dfrac{L_{K}}{N} + \dfrac{\sigma_{x} + \sigma_{y}}{\sqrt{N}})
+%$$
+%\item For both deterministic and stochastic SPP, the developed APD algorithms can deal with unbounded $X$ and $Y$ (as long as the saddle point problem exists).
+%\end{itemize}
+
+\section{Study of a particular algorithm: Primal Dual algorithm to solve the problem: }
+
+\subsection{Algorithm}
+
+\begin{itemize}
+\item $x_{1} \in X$, $y_{1} \in Y$. Set $\overline{x}_{1} = x_{1}$
+\item
+
+\begin{itemize}
+\item $y_{t+1} = \arg\min_{y \in Y} (-K\overline{x}_{t},y) + J(y) + \dfrac{1}{2\eta_{t}} \lVert y - y_{t} \rVert_{2}^{2}$
+\item $x_{t+1} = \arg\min_{x \in X} G(x) + (Kx,y_{t+1}) + \dfrac{1}{2\eta_{t}}\lVert x - x_{t} \rVert_{2}^{2} $
+\item $\overline{x}_{t+1} = \theta_{t}(x_{t+1} - x_{t}) + x_{t+1}$
+\end{itemize}
+
+\item $x^{N} = \dfrac{1}{N}\sum_{t=1}^{N} x_{t}$ and $y^{N} = \dfrac{1}{N}\sum_{t=1}^{N} y_{t}$
+\end{itemize}
+
+Developped by Chambolle et al.
+
+\subsection{ Analysis of the algorithm: }
+
+
+\section{ Accelerated Primal Dual Algorithm: }
+
+
+Sometimes the step $x_{t+1} = \arg\min_{x \in X} G(x) + (Kx,y_{t+1}) + \dfrac{1}{2\eta_{t}}\lVert x - x_{t} \rVert_{2}^{2}$ can be hard to compute.
+($G$ can be a "blackbox" function).
+
+Locally (around $x_{t}$) $G$ can be approximated by:
+$$
+G(x) \approx G(x_{t}) + (\nabla G(x_{t}),x - x_{t})
+$$
+
+and the previous step becomes:
+
+$x_{t+1} = \arg\min_{x \in X} (\nabla G(x_{t}),x) + (Kx,y_{t+1}) + \dfrac{1}{2\eta_{t}}\lVert x - x_{t} \rVert_{2}^{2}$
+
+Moreover, instead of penalising by a Euclidian quadratic term, the penalisation can be generalised with a Bregman Divergence
+
+\begin{itemize}
+\item $V_{X}(x,u) = d_{X}(x) -  d_{X}(u) - \langle \nabla d_{X}(u),x - u \rangle$
+\item $V_{Y}(y,v) = d_{Y}(y) -  d_{Y}(v) - \langle \nabla d_{Y}(v),y - v \rangle$
+\end{itemize}
+
+We can notice that with $d_{X}(x) = \lVert x \rVert_{2}^{2}$ and $d_{Y}(x) = \lVert y \rVert_{2}^{2}$ we obtain exactly the same term.
+
+\subsection{Accelerated Primal Dual for Stochastic Saddle Point Problems:}
+
+\begin{itemize}
+\item choose $x_{1} \in X, y_{1} \in Y$. Set $\overline{x}_{1} = x_{1}$
+\item
+
+\begin{itemize}
+\item $x_{t}^{md} = (1 - \dfrac{1}{\beta_{t}})x_{t}^{ag} +  \dfrac{1}{\beta_{t}}x_{t}$
+\item $y_{t+1} = \arg\min_{y \in Y} \langle -K\overline{x}_{t},y\rangle + J(y) + \dfrac{1}{\tau_{t}}V_{Y}(y,y_{t})$
+\item $x_{t+1} = \arg\min_{x \in X} \langle \nabla G(x_{t}^{md}) ,x \rangle + \langle x,K^{T}y_{t+1} \rangle + \dfrac{1}{\eta_{t}}V_{X}(x,x_{t})$
+\item $x_{t+1}^{ag} = (1 -  \dfrac{1}{\beta_{t}})x_{t+1}x_{t}^{ag}+ \dfrac{1}{\beta_{t}}x_{t+1}$
+\item $y_{t+1}^{ag} = (1 -  \dfrac{1}{\beta_{t}})y_{t+1}x_{t}^{ag}+ \dfrac{1}{\beta_{t}}y_{t+1}$
+\item $\overline{x}_{t+1} = \theta_{t+1}(x_{t+1} - x_{t}) + x_{t+1}$
+\end{itemize}
+
+\item Output $x_{N}^{ag}$ and $y_{N}^{ag}$
+\end{itemize}
+
+\subsection{Analysis of the Algorithm}
+
+\begin{thm}
+
+
+If
+
+\begin{itemize}
+\item $\sup_{x_{1},x_{2}} V_{X}(x_{1},x_{2}) \leq \Omega_{X}^{2}$
+\item $\sup_{y_{1},y_{2}} V_{X}(y_{1},y_{2}) \leq \Omega_{Y}^{2}$
+\end{itemize}
+
+and the parameters are chosen such that:
+
+\begin{itemize}
+\item $\beta_{1} = 1$, $\beta_{t+1} - 1 = \beta_{t}\theta_{t+1}$
+\item $0 < \theta_{t} \leq \min\{ \dfrac{\eta_{t-1}}{\eta_{t}}, \dfrac{\tau_{t-1}}{\tau_{t}}\}$
+\item $\dfrac{\alpha_{X}}{\eta_{t}} - \dfrac{L_{G}}{\beta_{t}} - \dfrac{L_{K}^{2}\tau_{t}}{\alpha_{Y}} \geq 0$
+\end{itemize}
+
+Then:
+$$
+g(z_{t+1}^{ag}) \leq \dfrac{1}{\beta_{t}\eta_{t}}\Omega_{X}^{2} + \dfrac{1}{\beta_{t}\tau_{t}}\Omega_{Y}^{2}
+$$
+
+
+\end{thm}
+
+\begin{proof}
+
+\end{proof}
+
+\section{Stochastic APD}
+
+In this setting we consider that we do not have access directly to $\nabla G(x)$ and to $Kx$ and $Ky$, but to some biased/noised values that we are going to call
+
+$\mathcal{G}(x)$, $\mathcal{K}_{x}(x)$ and $\mathcal{K}_{y}(y)$.
+
+We have $\mathcal{G}(x) = \nabla G(x) + \varepsilon_{g}$, $\mathcal{K}_{x}(x) = Kx + \varepsilon_{x}$, $\mathcal{K}_{y}(y) = Ky + \varepsilon_{y}$.
+
+$\varepsilon_{g}$, $\varepsilon_{x}$ and $\varepsilon_{y}$ represent the (stochastic) zero means errors.
+
+
+\begin{itemize}
+
+
+\item (A1) $$\mathbb{E}[\lVert \mathcal{G}(x) - \nabla G(x) \rVert_{2}^{2}] \leq \sigma_{G}^{2}$$,
+
+$$\mathbb{E}[\lVert \mathcal{K}_{x}(x) - Kx \rVert_{2}^{2}] \leq \sigma_{x}^{2}$$
+
+$$\mathbb{E}[\lVert \mathcal{K}_{y}(y) - Ky \rVert_{2}^{2}] \leq \sigma_{y}^{2}$$
+
+\item (A2) $$\mathbb{E}[\exp(\frac{\lVert \mathcal{G}(x) - \nabla G(x) \rVert_{2}^{2}}{\sigma_{G}^{2}})] \leq \exp{1}$$,
+
+$$\mathbb{E}\exp(\frac{[\lVert \mathcal{K}_{x}(x) - Kx \rVert_{2}^{2}}{\sigma_{x}^{2}})] \leq \exp{1}$$
+
+$$\mathbb{E}[\exp(\dfrac{\lVert \mathcal{K}_{y}(y) - Ky \rVert_{2}^{2}}{\sigma_{y}^{2}})] \leq \sigma_{y}^{2}$$
+\end{itemize}
+
+\subsection{Algorithm for solving stochastic SPP}
+
+\begin{itemize}
+\item $y_{t+1} = \arg\min_{y \in Y} \langle - \mathcal{K}_{x}(\overline{x}_{t}),y \rangle+ J(y) + \dfrac{1}{\tau_{t}} V_{Y}(y,y_{t})$
+\item $x_{t+1} = \arg\min_{x \in X} \langle \mathcal{G}(x_{t}^{md}),x\rangle + \langle x,\mathcal{K}_{y}(y_{t+1}) \rangle + \dfrac{1}{\eta_{t}} V_{X}(x,x_{t})$
+\end{itemize}
+
+
+\subsection{Analysis of convergence of the algorithm}
+
+\begin{thm}
+
+If 
+
+\begin{itemize}
+\item $\sup_{x_{1},x_{2}} V_{X}(x_{1},x_{2}) \leq \Omega_{X}^{2}$
+\item $\sup_{y_{1},y_{2}} V_{X}(y_{1},y_{2}) \leq \Omega_{Y}^{2}$
+\end{itemize}
+
+and
+
+\begin{itemize}
+\item $\beta_{1} = 1$, $\beta_{t+1} - 1 = \beta_{t}\theta_{t+1}$
+\item $0 < \theta_{t} \leq \min\{ \dfrac{\eta_{t-1}}{\eta_{t}}, \dfrac{\tau_{t-1}}{\tau_{t}}\}$
+\item $\dfrac{q\alpha_{X}}{\eta_{t}} - \dfrac{L_{G}}{\eta_{t}} - \dfrac{L_{K}^{2}\tau_{t}}{p\alpha_{Y}} \geq 0$
+\end{itemize}
+
+Then:
+
+
+\end{thm}
+
+
+
+\bibliographystyle{unsrt}
+\bibliography{references}
+
+
+
+\end{document}
