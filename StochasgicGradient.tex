@@ -1,0 +1,477 @@
+\documentclass{article}
+% Change "article" to "report" to get rid of page number on title page
+\usepackage{amsmath,amsfonts,amsthm,amssymb}
+\usepackage{setspace}
+\usepackage{Tabbing}
+\usepackage{fancyhdr}
+\usepackage{lastpage}
+\usepackage{extramarks}
+\usepackage{chngpage}
+\usepackage{soul,color}
+\usepackage{graphicx,float,wrapfig}
+
+
+
+% In case you need to adjust margins:
+\topmargin=-0.45in      %
+\evensidemargin=0in     %
+\oddsidemargin=0in      %
+\textwidth=6.5in        %
+\textheight=9.0in       %
+\headsep=0.25in         %
+
+% Homework Specific Information
+\newcommand{\hmwkTitle}{Homework\ \#1}
+\newcommand{\hmwkDueDate}{Tuesday,\ September\ 23,\ 2014}
+\newcommand{\hmwkClass}{ORF\ 526}
+\newcommand{\hmwkClassTime}{5:00}
+\newcommand{\hmwkClassInstructor}{}
+\newcommand{\hmwkAuthorName}{Thomas \ Pumir}
+
+% Setup the header and footer
+\pagestyle{fancy}                                                       %
+\lhead{\hmwkAuthorName}                                                 %
+\chead{\hmwkClass\ (\hmwkClassInstructor\ \hmwkClassTime): \hmwkTitle}  %
+\rhead{\firstxmark}                                                     %
+\lfoot{\lastxmark}                                                      %
+\cfoot{}                                                                %
+\rfoot{Page\ \thepage\ of\ \pageref{LastPage}}                          %
+\renewcommand\headrulewidth{0.4pt}                                      %
+\renewcommand\footrulewidth{0.4pt}                                      %
+
+% This is used to trace down (pin point) problems
+% in latexing a document:
+%\tracingall
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Some tools
+\newcommand{\enterProblemHeader}[1]{\nobreak\extramarks{#1}{#1 continued on next page\ldots}\nobreak%
+                                    \nobreak\extramarks{#1 (continued)}{#1 continued on next page\ldots}\nobreak}%
+\newcommand{\exitProblemHeader}[1]{\nobreak\extramarks{#1 (continued)}{#1 continued on next page\ldots}\nobreak%
+                                   \nobreak\extramarks{#1}{}\nobreak}%
+
+\newlength{\labelLength}
+\newcommand{\labelAnswer}[2]
+  {\settowidth{\labelLength}{#1}%
+   \addtolength{\labelLength}{0.25in}%
+   \changetext{}{-\labelLength}{}{}{}%
+   \noindent\fbox{\begin{minipage}[c]{\columnwidth}#2\end{minipage}}%
+   \marginpar{\fbox{#1}}%
+
+   % We put the blank space above in order to make sure this
+   % \marginpar gets correctly placed.
+   \changetext{}{+\labelLength}{}{}{}}%
+
+\setcounter{secnumdepth}{0}
+\newcommand{\homeworkProblemName}{}%
+\newcounter{homeworkProblemCounter}%
+\newenvironment{homeworkProblem}[1][Problem \arabic{homeworkProblemCounter}]%
+  {\stepcounter{homeworkProblemCounter}%
+   \renewcommand{\homeworkProblemName}{#1}%
+   \section{\homeworkProblemName}%
+   \enterProblemHeader{\homeworkProblemName}}%
+  {\exitProblemHeader{\homeworkProblemName}}%
+
+\newcommand{\problemAnswer}[1]
+  {\noindent\fbox{\begin{minipage}[c]{\columnwidth}#1\end{minipage}}}%
+
+\newcommand{\problemLAnswer}[1]
+  {\labelAnswer{\homeworkProblemName}{#1}}
+
+\newcommand{\homeworkSectionName}{}%
+\newlength{\homeworkSectionLabelLength}{}%
+\newenvironment{homeworkSection}[1]%
+  {% We put this space here to make sure we're not connected to the above.
+   % Otherwise the changetext can do funny things to the other margin
+
+   \renewcommand{\homeworkSectionName}{#1}%
+   \settowidth{\homeworkSectionLabelLength}{\homeworkSectionName}%
+   \addtolength{\homeworkSectionLabelLength}{0.25in}%
+   \changetext{}{-\homeworkSectionLabelLength}{}{}{}%
+   \subsection{\homeworkSectionName}%
+   \enterProblemHeader{\homeworkProblemName\ [\homeworkSectionName]}}%
+  {\enterProblemHeader{\homeworkProblemName}%
+
+   % We put the blank space above in order to make sure this margin
+   % change doesn't happen too soon (otherwise \sectionAnswer's can
+   % get ugly about their \marginpar placement.
+   \changetext{}{+\homeworkSectionLabelLength}{}{}{}}%
+
+\newcommand{\sectionAnswer}[1]
+  {% We put this space here to make sure we're disconnected from the previous
+   % passage
+
+   \noindent\fbox{\begin{minipage}[c]{\columnwidth}#1\end{minipage}}%
+   \enterProblemHeader{\homeworkProblemName}\exitProblemHeader{\homeworkProblemName}%
+   \marginpar{\fbox{\homeworkSectionName}}%
+
+   % We put the blank space above in order to make sure this
+   % \marginpar gets correctly placed.
+   }%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Make title
+\title{\vspace{2in}\textmd{\textbf{\hmwkClass:\ \hmwkTitle}}\\\normalsize\vspace{0.1in}\small{Due\ on\ \hmwkDueDate}\\\vspace{0.1in}\large{\textit{\hmwkClassInstructor\ \hmwkClassTime}}\vspace{3in}}
+\date{}
+\author{\textbf{\hmwkAuthorName}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\begin{spacing}{1.1}
+
+
+\maketitle
+\newpage
+% Uncomment the \tableofcontents and \newpage lines to get a Contents page
+% Uncomment the \setcounter line as well if you do NOT want subsections
+%       listed in Contents
+%\setcounter{tocdepth}{1}
+\tableofcontents
+\newpage
+
+% When problems are long, it may be desirable to put a \newpage or a
+% \clearpage before each homeworkProblem environment
+
+\clearpage
+
+
+
+\begin{homeworkProblem}
+ 
+ We consider the toss of two (unbiased) coins.
+ The (four) possible  outcomes are
+ 
+ \begin{itemize}
+ \item \{ tail,tail \} with probability $\frac{1}{4}$
+ \item \{ tail, head \} with probability $\frac{1}{4}$
+ \item \{ head, tail \} with probability $\frac{1}{4}$
+ \item \{ head, head \} with probability $\frac{1}{4}$
+ \end{itemize} 
+ 
+ Let's consider the three following events
+ \begin{itemize}
+ \item A = \{ tail on the first toss \}
+ \item B = \{ tail on the second toss \}
+ \item C = \{ the two toss have the same outcome \}
+ \end{itemize}
+ 
+ The probability of the different events are:
+ 
+  \begin{itemize}
+ \item $\mathbb{P}(A) = \mathbb{P}( \{tail, tail \} \cup \{ tail, head \})  = \frac{1}{2}$
+ \item $\mathbb{P}(B) = \mathbb{P}( \{tail, tail \} \cup \{ head, tail \})= \frac{1}{2}$
+ \item $\mathbb{P}(C)  = \mathbb{P}( \{tail, tail \} \cup \{ head, head \}) = \frac{1}{2}$
+  \end{itemize}
+ 
+$$ \mathbb{P}(A \cap B) = \mathbb{P}(\{tail, tail \}) = \frac{1}{4} = \mathbb{P}(A)\mathbb{P}(B)$$
+ $$\mathbb{P}(A \cap C) = \mathbb{P}(\{tail, tail \}) = \frac{1}{4} = \mathbb{P}(A) \mathbb{P}(C)$$
+ $$ \mathbb{P}(B \cap C) = \mathbb{P}(\{tail, tail \}) = \frac{1}{4} = \mathbb{P}(B) \mathbb{P}(C)$$
+ 
+  $$ \mathbb{P}(A \cap B \cap C )  \neq \mathbb{P}(A)\mathbb{P}(B)\mathbb{P}(C)$$
+ 
+ The events $A$, $B$, $C$ are pairwise independent but non independent.
+ 
+\end{homeworkProblem}
+
+\begin{homeworkProblem}
+
+\begin{equation}
+X = Re(X) + i Im(X)
+\end{equation}
+
+\begin{align*}
+\mathbb{E}[X] &= \sum_{n=1}^{N} X(\omega_n)p_n \\
+&= \sum_{n=1}^{N} Re(X(\omega_n))p_n + i Im(X(\omega_n))p_n\\
+&= \sum_{n=1}^{N} Re(X(\omega_n))p_n + i \sum_{n=1}^{N} Im(X(\omega_n))p_n \\
+&= \mathbb{E}[Re(X)] +  i \mathbb{E}[Im(X)]
+\end{align*}
+
+\end{homeworkProblem}
+
+
+
+
+\begin{homeworkProblem}
+
+Let's show that the three conditions $(i)$, $(ii)$ and $(iii)$ are equivalent
+
+$(i) \Rightarrow (ii)$
+
+\begin{align*}
+\mathbb{E}[f_{1}(X_{1}...f_{M}(X_{M}] &= \sum_{x_{1},...,x_{M}}f_{1}(x_{1})...f_{M}(x_{M})\mathbb{P}(X_{1} = x_{1},...,X_{M} = x_{M})\\
+&= \sum_{x_{1},...,x_{M}}f_{1}(x_{1})...f_{M}(x_{M})\prod_{k=1}^{M}\mathbb{P}(X_{k} = x_{k})\\
+&= \sum_{x_{1},...,x_{M}} \prod_{k=1}^{M}f_{k}(x_{k})\mathbb{P}(X_{k} = x_{k})\\
+&= \sum_{x_{1}}...\sum_{x_{M}}\prod_{k=1}^{M}f_{k}(x_{k})\mathbb{P}(X_{k} = x_{k})\\
+&= \prod_{k=1}^{M} (\sum_{x_{k}}f_{k}(x_{k})\mathbb{P}(X_{k} = x_{k}))\\
+&= \prod_{k=1}^{M} \mathbb{E}[f_{k}(x_{k})]
+\end{align*}
+
+$(ii) \Rightarrow (i)$
+
+Let's just take $f_{k} = \mathbf{1}_{X = x_{k}}$\\
+The result follows.
+
+
+$(i) \Rightarrow (iii)$
+\begin{align*}
+\mathbb{E}[e^{iu^{T}X}] &= \mathbb{E}[e^{i \sum_{k=1}^{M}u_{k}X_{k}}] \\
+&= \sum_{x_{1},...,x_{M}} e^{i \sum_{k=1}^{M}u_{k}x_{k}}\mathbb{P}(X_{1} = x_{1},...,X_{M} = x_{M})\\
+&= \sum_{x_{1},...,x_{M}} \prod_{k=1}^{M}e^{i u_{k}x_{k}}\mathbb{P}(X_{k} = x_{k})\\
+&= \prod_{k=1}^{M} \sum_{x_{1},...,x_{M}} e^{i u_{k}x_{k}}\mathbb{P}(X_{k} = x_{k})\\
+&= \prod_{k=1}^{M}\mathbb{E}[e^{i u_{k}X_{k}}]\\
+\end{align*}
+
+Now we just have to show that $(iii) \Rightarrow (i)$
+
+\begin{align*}
+\mathbb{E}[e^{iu^{T}X}] &= \mathbb{E}[e^{i\sum_{k}u_{k}X_{k}}] \\
+&= \sum_{x_{1},...,x_{M}}e^{i\sum_{k=1}^{M}u_{k}x_{k}}\mathbb{P}(X_{1} = x_{1},...,X_{M} = x_{M})\\
+&= \prod_{k=1}^{M}\mathbb{E}[e^{iu_{k}X_{k}}]\\
+&= \prod_{k=1}^{M}(\sum_{x_{k}}\mathbb{E}[e^{iu_{k}x_{k}}]\mathbb{P}(X_{k} = x_{k})\\
+&= \sum_{x_{1},...,x_{k}}\prod_{k=1}^{M}\mathbb{E}[e^{iu_{k}x_{k}}]\mathbb{P}(X_{k} = x_{k})\\
+&= \sum_{x_{1},...,x_{k}}\mathbb{E}[e^{i\sum_{k}u_{k}x_{k}}]\prod_{k=1}^{M}\mathbb{P}(X_{k} = x_{k})
+\end{align*}
+
+Therefore, the difference between inequalities gives
+
+$$
+[\sum_{x_{1},...,x_{M}}e^{i\sum_{k=1}^{M}u_{k}x_{k}}\mathbb{P}(X_{1} = x_{1},...,X_{M} = x_{M}) - \sum_{x_{1},...,x_{k}}\mathbb{E}[e^{i\sum_{k}u_{k}x_{k}}]\prod_{k=1}^{M}\mathbb{P} = (X_{k} = x_{k})] = 0
+$$
+
+Rearranging, this gives:
+
+$$
+\forall u \in \mathbb{R}^{M},  \sum_{x_{1},...,x_{M}} e^{i\sum_{k=1}^{M}u_{k}x_{k}}[\mathbb{P}(X_{1} = x_{1},...,X_{M} = x_{M}) -  \prod_{k=1}^{M}\mathbb{P} = (X_{k} = x_{k})] = 0
+$$
+
+If we consider:
+$$
+\Phi_{X}:u \rightarrow e^{i\sum_{k=1}^{M}u_{k}x_{k}}
+$$
+Then the family $(\Phi_{X})$, ($X$ being over a finite family) is linearly independent.
+
+Linearly independence implies that $\forall X$, $\mathbb{P}(X_{1} = x_{1},...,X_{M} = x_{M}) -  \prod_{k=1}^{M}\mathbb{P} = (X_{k} = x_{k}) = 0$.
+Which is the desired result.
+
+\end{homeworkProblem}
+
+
+
+
+
+\begin{homeworkProblem}
+Let $X_{1},...,X_{M}$ be M independent random variables.\\
+Let $x_{1},...,x_{m}$.
+
+\begin{align*}
+\mathbb{P}(g(X_{1}) = g(x_{1}),...,g(X_{M}) = g(x_{M})) &= \mathbb{P}(\{X_{1} \in g^{-1}(\{g(x_{1})\})\},...,X_{M} \in g^{-1}(\{g(x_{M})\}) )\\
+&= \mathbb{P}( \cup_{a_{1} \in g^{-1}(\{g(x_{1})\})} \{  X_{1} = a_{1} \},...,   \cup_{a_{M} \in g^{-1}(\{g(x_{M})\})} \{  X_{M} = a_{M} \} )\\
+&= \sum_{a_{1}}...\sum_{a_{M}}\mathbb{P}(  X_{1} = a_{1},...,   X_{M} = a_{M})\\
+&= \sum_{a_{1}}...\sum_{a_{M}}\prod_{k}\mathbb{P}(  X_{k} = a_{k})\\
+&= \prod_{k}\mathbb{P}(  \cup_{a_{k} \in g^{-1}(\{g(x_{k})\}) } \{ X_{k} = a_{k} \} )\\
+&= \prod_{k=1}^{M}\mathbb{P}(\{X_{k} \in g^{-1}(\{g(x_{k})\})\})\\
+&= \prod_{k=1}^{M}\mathbb{P}(g(X_{k}) = g(x_{k}))\\
+\end{align*}
+
+Which is exactly the definition that $g(X_{1}),...,g(X_{M})$ are equivalent.
+
+\end{homeworkProblem}
+
+\begin{homeworkProblem}
+\begin{itemize}
+
+\item If $X$ and $Y$ are independent, then by the results of exercise 3 with $f = id$,  $\mathbb{E}[XY] = \mathbb{E}[X]\mathbb{E}[Y]$.
+In this case $cov(X,Y) = \mathbb{E}[XY] - \mathbb{E}[X]\mathbb{E}[Y] = 0$ \\
+\item Let 
+
+\begin{itemize}
+
+\item
+$$
+X = \left\{
+    \begin{array}{ll}
+        +1 & \mbox{with probability } \frac{1}{4} \\
+        +2 & \mbox{with probability } \frac{1}{4} \\
+        -1 & \mbox{with probability } \frac{1}{4} \\
+        -2 & \mbox{with probability } \frac{1}{4} \\
+    \end{array}
+\right.
+$$
+
+\item
+$$
+\varepsilon = \left\{
+    \begin{array}{ll}
+        +1 & \mbox{with probability } \frac{1}{2} \\
+        -1 & \mbox{with probability } \frac{1}{2}
+    \end{array}
+\right.
+$$
+
+$\varepsilon$ and $X$ are independent
+
+\item
+$$
+Y= \varepsilon X 
+$$
+\end{itemize}
+
+Then  $cov(X,Y) = 0$
+
+\begin{align*}
+cov(X,Y) &= \mathbb{E}[\varepsilon X^2] -  \mathbb{E}[X]\mathbb{E}[\varepsilon X]\\
+&= \mathbb{E}[\varepsilon X^2] \\
+&= (1.\mathbb{P}(X^2 = 1) + 4\mathbb{P}(X^2 = 1))\mathbb{P}(\varepsilon = 1) - (1.\mathbb{P}(X^2 = 1) + 4\mathbb{P}(X^2 = 1))\mathbb{P}(\varepsilon = -1)\\
+&= (1.\mathbb{P}(X^2 = 1) + 4\mathbb{P}(X^2 = 1))\frac{1}{2} - (1.\mathbb{P}(X^2 = 1) + 4\mathbb{P}(X^2 = 1))\frac{1}{2}\\
+&= 0
+\end{align*}
+
+But $X$ and $Y$ are not independent.
+Indeed, 
+
+\begin{itemize}
+\item $\mathbb{P}( X = 1) = \frac{1}{4}$
+\item $\mathbb{P}( Y = 1) = \mathbb{P}(\{ X = 1, \varepsilon = 1 \} \cup \{ X = -1, \varepsilon = -1 \}) = \frac{1}{4}$ 
+\item $\mathbb{P}( X = 1, Y = 1) =  \mathbb{P}( X = 1, \varepsilon = 1) = \mathbb{P}( X = 1)\mathbb{P}(\varepsilon = 1) = \frac{1}{8} \neq \mathbb{P}( X = 1)\mathbb{P}( Y = 1)$
+\end{itemize}
+
+
+\end{itemize}
+\end{homeworkProblem}
+
+
+
+\begin{homeworkProblem}
+A vector space over  field $\mathbb{F}$ is a set $V$ together with two laws of composition:
+\begin{itemize}
+\item Vector addition: $V \times V \rightarrow V$, written $(v,w) \rightarrow v + w$
+\item Scalar multiplication: $\mathbb{F} \times V \rightarrow V$, written $(\alpha,v) \rightarrow \alpha v$
+\end{itemize}
+that satisfy the following properties:
+
+\begin{itemize}
+\item Vector addition makes $V$ into a commutative group
+\item Scalar multiplication is associative with multiplication in $\mathbb{F}$:
+$$
+(\alpha\beta)v = \alpha(\beta v)
+$$
+for all $\alpha, \beta \in \mathbb{F}$ and $v \in V$
+\item The element $1 \in \mathbb{F}$ acts as identity $1v = v$ for all $v \in V$
+\item Two distributive laws hold:
+$$
+(\alpha + \beta)v = \alpha v + \beta v
+$$
+
+and
+$$
+\alpha(v + w) = \alpha v + \alpha w
+$$
+\end{itemize}
+
+An element of the field $\mathbb{F}$ is allied a scalar, and an element of vector space $V$ is called a vector.
+
+We now give three examples of vector spaces:
+
+\begin{itemize}
+\item $\mathbb{R}^{n}$ is a $\mathbb{R}$ vector space
+\item $\mathbb{C}$ is a $\mathbb{R}$ vector space
+\item $C^{0}([0,1],\mathbb{R})$, the set of continuous functions from $[0,1]$ to $\mathbb{R}$, is a $\mathbb{R}$ vector space
+\end{itemize}
+
+\end{homeworkProblem}
+
+\begin{homeworkProblem}
+a) 
+\begin{align*}
+\langle x, ay + z \rangle &= \langle ay + z, x \rangle \hspace{0.5cm} \texttt{by symmetry}\\
+&= a \langle y, x \rangle + \langle z,x \rangle \hspace{0.5cm} \texttt{by bilinearity}\\
+&= a \langle x, y \rangle + \langle x,z \rangle \hspace{0.5cm} \texttt{by symmetry}\\
+\end{align*}
+
+b)Let's consider 
+\begin{align*}
+P(\lambda) &= \langle x - \lambda y, x - \lambda y \rangle\\
+&= \langle x, x \rangle - 2  \langle x, y \rangle \lambda +   \langle y, y \rangle \lambda^2 \\
+&= \Vert x - \lambda y \Vert_{2}^{2} \geq 0
+\end{align*}
+Since $P(\lambda)$ is a second degree polynomial, always larger than zero, his determinant must be less or equal than zero.
+Therefore 
+
+$$
+\Delta = (2  \langle x, y \rangle)^2 - 4\Vert x \Vert^2 \Vert y \Vert^2 \leq 0
+$$
+
+Thus,  $$ \langle x, y \rangle^2 \leq \Vert x \Vert^2 \Vert y \Vert^2 $$
+
+$$ \boxed{ | \langle x, y \rangle | \leq \Vert x \Vert \Vert y \Vert } $$
+
+
+c)
+\begin{itemize}
+\item Positive homogeneity
+\begin{align*}
+\Vert ax \Vert &= \sqrt{\langle ax,ax \rangle} \\
+& = \sqrt{a\langle x,ax \rangle} \hspace{0.5cm} \texttt{by bilinearity}\\
+& = \sqrt{a\langle ax,x \rangle} \hspace{0.5cm} \texttt{by symmetry} \\
+& = \sqrt{a^2\langle x,x \rangle} \hspace{0.5cm} \texttt{by bilinearity}\\
+&= a\sqrt{ \langle x,x \rangle} \\
+&= a \Vert x \Vert
+\end{align*}
+
+\item Triangle Inequality
+\begin{align*}
+\Vert x + y \Vert^2 &= \Vert x \Vert^2 + 2 \langle x,y \rangle + \Vert y \Vert^2 \\
+& \leq \Vert x \Vert^2 + 2 \Vert x\Vert \Vert y \Vert + \Vert y \Vert^2 \hspace{0.5cm} \texttt{by Cauchy Schwartz inequality} \\
+&= (\Vert x \Vert + \Vert y \Vert)^2
+\end{align*}
+
+Therefore since $\Vert x + y \Vert^2 \leq (\Vert x \Vert + \Vert y \Vert)^2$ we have $\Vert x + y \Vert \leq (\Vert x \Vert + \Vert y \Vert)$
+
+\item Positive definiteness
+This comes from the positive definiteness property of the scalar/inner product.
+
+\end{itemize}
+
+d) We define the inner product on the space of random variables
+$$
+\langle X,Y \rangle = \mathbb{E}[(X - \mathbb{E}[X])(Y - \mathbb{E}[Y])]
+$$
+This inner product has the
+\begin{itemize}
+\item Symmetry
+\begin{align*}
+\langle X,Y \rangle &= \mathbb{E}[(X - \mathbb{E}[X])(Y - \mathbb{E}[Y])]\\
+&= \mathbb{E}[(Y - \mathbb{E}[Y])(X - \mathbb{E}[X])]\\
+&= \langle Y,X \rangle
+\end{align*}
+\item Bilinearity
+\begin{align*}
+\langle aX + Y, Z \rangle &= \mathbb{E}[a(X - \mathbb{E}[X]) + (Y - \mathbb{E}[Y]))(Z - \mathbb{E}[Z])]\\
+&= a \mathbb{E}[(X - \mathbb{E}[X])(Z - \mathbb{E}[Z])] +  \mathbb{E}[(Y - \mathbb{E}[Y])(Z - \mathbb{E}[Z])]\\
+&= a\langle X, Z \rangle + \langle Y, Z \rangle
+\end{align*}
+\item Positive Definiteness
+\begin{align*}
+\Vert X \Vert &= \sqrt{\langle X, X \rangle} \\
+&= \sqrt{\mathbb{E}[(X - \mathbb{E}[X])^2]}\\
+&\geq 0
+\end{align*}
+\end{itemize}
+
+Then by question b), Cauchy-Schwartz inequality holds.
+Thus we have 
+\begin{align*}
+|cov(X,Y)| &= |\mathbb{E}[(X - \mathbb{E}[X])(Y - \mathbb{E}[Y])]| \\
+&= |\langle X,Y \rangle| \\
+& \leq \sqrt{\langle X,X \rangle \langle Y,Y \rangle} \\
+&= \sqrt{ \mathbb{E}[(X - \mathbb{E}[X])^2] \mathbb{E}[(Y - \mathbb{E}[Y])^2] }\\
+&= \sqrt{Var(X)Var(Y)}
+\end{align*}
+\end{homeworkProblem}
+
+\end{spacing}
+\end{document}
+
