@@ -185,7 +185,7 @@
 
 \section{Description of the Problem}
 
-Here we introduce the notation that will be used throughout for both the saddlepoint problem and the dynamic programming problem -- sometimes referred to as stochastic control.
+Here we introduce the notation that will be used throughout for both the saddlepoint problem and the dynamic programming problem -- sometimes referred to as stochastic control problem.
 
 \subsection{Dynamic Programming / Stochastic Control}
 The problems considered by us are discrete time stochastic processes with finite state space $S$ and the system can be modelled as a Markov Decision Process. There is a finite space of actions $A_x$ available to take at state $x$. By $p_a(x_1,x_2)$ we denote the probability that from state $x_1$ the system reaches state $x_2$ given that action $a$ is taken. The policy we choose $u$ maps from the state space to an action in the action space $A$, but specifically into $A_x \subset A$, for each $x$ respectively.
@@ -195,11 +195,13 @@ $$
 J_u(x) = \E [\sum \alpha^t g_u(x_t) | x_0 = x]
 $$
 
+$\alpha$ being a constant $< 1$.
+
 The goal of our dynamic program is to use Bellman's equation to find an optimal cost-to-go vector $J^*$ and a corresponding policy $\mu^*$ and find the policy which minimizes the cost to go function simultaneously over all $x$.
 
 \section{Dynamic Programming with Linear Programming}
 
-As dynamic programs become large, in terms of the number of state variables, the size of the state space grows exponentially. Clearly this presents a problem with respect to computational tractability. In two papers by de Farias and Van Roy, one published and one survey, they present linear programming approaches to the problem of approximating dynamic programs, presenting several approaches and algorithms to do so.
+As dynamic programs become large, in terms of the number of state variables, the size of the state space grows exponentially. Clearly this presents a problem with respect to computational tractability. In \cite{FV} \cite{FV2} De Farias and Van Roy present a linear programming approaches to the problem of approximating dynamic programs, giving several approaches and algorithms to do so.
 
 \subsection{Formulation of the Problem}
 Denote by $T_u$
@@ -311,7 +313,7 @@ To approximate the approximate linear program, we create a new program called th
 Therefore the program that we wish to solve is
 \begin{align*}
 \text{maximize } & c^T \Phi r & \\
-\text{subject to } & g_a(x) + \alpha \sum_{x' \in S} p_a(x,x')(\Phir)(y) \geq (\phi r) (x), & \forall (a,x) \in D \\
+\text{subject to } & g_a(x) + \alpha \sum_{x' \in S} p_a(x,x')(\Phi r)(y) \geq (\phi r) (x), & \forall (a,x) \in D \\
 & r \in \sN & \\
 \end{align*}
 
@@ -409,6 +411,13 @@ $$
 \boxed{\varepsilon(x,y) = \overline{\Phi}(x) - \underline{\Phi}(y)}
 $$
 
+If $(x^{*},y^{*})$ are the solution of the primal problem $(P)$,
+then $\forall x, y \in X \times Y$:
+$$
+\underline{\Phi}(y) \leq \Phi(x^{*},y^{*}) \leq \overline{\Phi}(x)
+$$
+
+With equality iff $x = x^{*}$ and $y = y^{*}$.
 
 \subsection{Motivations}
 
@@ -503,7 +512,8 @@ $$
 \end{thm}
 
 
-Remark: 
+WE can notice that the previous rate of convergence results depends on the parameters. It seems therefore reasonable 
+to optimise the parameters.
 
 \begin{cor}
 Optimizing over the prameters yields:
@@ -555,10 +565,20 @@ We give here a brief overview of those two proofs.
 
 \begin{proof}
 
-First we introduce a dissimilarity measure
+The main idea of the proof consists of defining a distance on $X \times Y$.
+Then, after fixing $(x,y)\in X \times Y$, we define $d_{t} = d((x,y),(x_{t},y_{t}))$ the distance between $(x,y)$
+and the output of the algorithm at time $t$.
+By 1-lipschitziannity of the projection, and convexity of $\Phi$ in the first variable, we obtain a bound on:
 $$
-g((\overline{x},\overline{y})) = 
+\Phi(x_{t},y) - \Phi(x,y_{t})
 $$
+$\forall t \leq N$.
+By summing this bound over $t$, and applying Cauchy Inequality we now have a bound on
+$$
+\Phi(x_{N},y) - \Phi(x,y_{N})
+$$
+
+Considering the expectation and some additional computations later, we obtain the desired result.
 
 \end{proof}
 
@@ -594,7 +614,7 @@ We truncate the sample variances to avoid too large or too small fluctuations.
 %L_{t} = D_{X}\sqrt{\dfrac{1}{t}\sum_{\tau=1}^{t}\lVert g_{x}^{\tau} \rVert_{2}^{2}} + D_{Y}\sqrt{\dfrac{1}{t}\sum_{\tau=1}^{t}  \lVert g_{y}^{\tau} \rVert_{2}^{2}}
 %$$
 
-\subsection{Discussion on the algorithm}
+%\subsection{Discussion on the algorithm}
 
 \subsection{Numerical results}
 
@@ -730,20 +750,29 @@ In the following, we focus on the last method, achieving the optimal convergence
 
 
 \subsubsection{ Stochastic SPP: }
+
+A lower bound on the rate of convergence of Stochastic Programming is shown in \cite{YudinNemirovski} to be
+
+$$
+O(\dfrac{L_{G}}{N^{2}} + \dfrac{L_{K}}{N}  + \dfrac{\sigma_{x} + \sigma_{y}}{\sqrt{N}})
+$$
+
+Below we briefly review some the rate of convergence of some stochastic approximation algorithms.
+
 \begin{itemize}
-\item Mirror descent stochastic Approximation:
+\item Mirror descent stochastic Approximation (MDSA): This is basically the method we presented in the first section.
 
 $$
 O((L_{G} + L_{K} + \sigma_{x} + \sigma_{y})\dfrac{1}{\sqrt{N}})
 $$
 
-\item Stochastic Mirror Prox
+\item Stochastic Mirror Prox (SMP) an improvement of the method described in the first section yields a rate of convergence of:
 
 $$
 O(\dfrac{L_{G} + L_{K}}{N} + \dfrac{\sigma_{x} + \sigma_{y}}{\sqrt{N}})
 $$
 
-\item Accelerated Stochastic Approximation
+\item Accelerated Stochastic Approximation (AC-SA) is a stochastic version of Nesterov's method that achieves the following convergence rate:
 
 $$
 O(\dfrac{L_{G}}{N^{2}}) + (L_{K} + \sigma_{x} + \sigma_{y})\dfrac{1}{\sqrt{N}}
@@ -767,12 +796,15 @@ $$
 %$$
 %O(\dfrac{L_{G}}{N^{2}} + \dfrac{L_{K}}{N} + \dfrac{\sigma_{x} + \sigma_{y}}{\sqrt{N}})
 %$$
-%\item For both deterministic and stochastic SPP, the developed APD algorithms can deal with unbounded $X$ and $Y$ (as long as the saddle point problem exists).
+%\item For both deterministic and stochastic SPP, the developed APD algorithms can deal with unbounded $X$ and $Y$ (as long as the saddle point problem exists). 
 %\end{itemize}
 
 \section{Study of a particular algorithm: Primal Dual algorithm to solve the problem: }
 
 \subsection{Algorithm}
+
+
+This algorithm has been proposed  by Chambolle and Pock in \cite{ChambollePock}
 
 \begin{itemize}
 \item $x_{1} \in X$, $y_{1} \in Y$. Set $\overline{x}_{1} = x_{1}$
@@ -787,10 +819,15 @@ $$
 \item $x^{N} = \dfrac{1}{N}\sum_{t=1}^{N} x_{t}$ and $y^{N} = \dfrac{1}{N}\sum_{t=1}^{N} y_{t}$
 \end{itemize}
 
-Developped by Chambolle et al.
+The stochastic method for saddle point problem we present below achieves the (almost) optimal rate of convergence 
 
 \subsection{ Analysis of the algorithm: }
 
+
+Although a good start for our problem, this algorithm is ineffective for solving the saddle point problem resulting in
+the approximation of the resolution of Dynamic Programming.
+Indeed, it requires the exact gradient. Moreover, the proof of convergence only holds if X and Y are bounded sets, which is not the case
+of the saddle point problem induced by Lagrangian of the approximation of LP...
 
 \section{ Accelerated Primal Dual Algorithm: }
 
