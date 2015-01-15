@@ -1,0 +1,1197 @@
+% LaTEX source code
+% Last modified November 1st, 2005
+% Steve Miller
+
+% note that the percent sign comments out the rest of the line
+% first, we set a document class. often use 12pt characters, though
+% sometimes people do 11 or 10. you can do report or article, both similar
+
+%\documentclass[12pt,letterpaper]{article}
+\documentclass[12pt,reqno]{amsart}
+
+
+\addtolength{\textwidth}{2cm} \addtolength{\hoffset}{-1cm}
+\addtolength{\marginparwidth}{-1cm} \addtolength{\textheight}{2cm}
+\addtolength{\voffset}{-1cm}
+
+
+% below are some packages that are needed for certain symbols, graphics, colors.
+% safest to just include these.
+
+\usepackage{times}
+\usepackage[T1]{fontenc}
+\usepackage{mathrsfs}
+\usepackage{latexsym}
+\usepackage[dvips]{graphics}
+\usepackage{epsfig}
+%\usepackage{hyperref, amsmath, amsthm, amsfonts, amscd, flafter,epsf}
+\usepackage{amsmath,amsfonts,amsthm,amssymb,amscd}
+\input amssym.def
+\input amssym.tex
+\usepackage{color}
+
+
+    %=======================================================
+    %   THIS IS WHERE YOU PUT SHORTCUT DEFINITIONS
+    %========================================================
+
+% Note that we use a percent sign to comment out a line
+% below are shortcut commands
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% below are shortcuts for equation, eqnarray,
+% itemize and enumerate environments
+
+\newcommand\be{\begin{equation}}
+\newcommand\ee{\end{equation}}
+\newcommand\bea{\begin{eqnarray}}
+\newcommand\eea{\end{eqnarray}}
+\newcommand\bi{\begin{itemize}}
+\newcommand\ei{\end{itemize}}
+\newcommand\ben{\begin{enumerate}}
+\newcommand\een{\end{enumerate}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Theorem / Lemmas et cetera
+
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{conj}[thm]{Conjecture}
+\newtheorem{cor}[thm]{Corollary}
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem{prop}[thm]{Proposition}
+\newtheorem{exa}[thm]{Example}
+\newtheorem{defi}[thm]{Definition}
+\newtheorem{exe}[thm]{Exercise}
+\newtheorem{rek}[thm]{Remark}
+\newtheorem{que}[thm]{Question}
+\newtheorem{prob}[thm]{Problem}
+\newtheorem{cla}[thm]{Claim}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% shortcuts to environments
+% this allows you to do textboldface: simply type \tbf{what you want in bold}
+
+\newcommand{\tbf}[1]{\textbf{#1}}
+\newcommand{\arr}[1]{\overrightarrow{#1}}
+\newcommand{\avec}[1]{\langle #1 \rangle}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% shortcut to twocase and threecase definitions
+
+\newcommand{\twocase}[5]{#1 \begin{cases} #2 & \text{#3}\\ #4
+&\text{#5} \end{cases}   }
+\newcommand{\threecase}[7]{#1 \begin{cases} #2 &
+\text{#3}\\ #4 &\text{#5}\\ #6 &\text{#7} \end{cases}   }
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%Blackboard Letters
+
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\newcommand{\C}{\ensuremath{\mathbb{C}}}
+\newcommand{\Z}{\ensuremath{\mathbb{Z}}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\W}{\mathbb{W}}
+\newcommand{\Qoft}{\mathbb{Q}(t)}  %use in linux
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Finite Fields and Groups
+
+\newcommand{\Fp}{ \F_p }
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Fractions
+
+\newcommand{\foh}{\frac{1}{2}}  %onehalf
+\newcommand{\fot}{\frac{1}{3}}
+\newcommand{\fof}{\frac{1}{4}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Legendre Symbols
+
+\newcommand{\js}[1]{ { \underline{#1} \choose p} }
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% matrix shortcuts
+
+\newcommand{\mattwo}[4]
+{\left(\begin{array}{cc}
+                        #1  & #2   \\
+                        #3 &  #4
+                          \end{array}\right) }
+
+\newcommand{\matthree}[9]
+{\left(\begin{array}{ccc}
+                        #1  & #2 & #3  \\
+                        #4 &  #5 & #6 \\
+                        #7 &  #8 & #9
+                          \end{array}\right) }
+
+\newcommand{\dettwo}[4]
+{\left|\begin{array}{cc}
+                        #1  & #2   \\
+                        #3 &  #4
+                          \end{array}\right| }
+
+\newcommand{\detthree}[9]
+{\left|\begin{array}{ccc}
+                        #1  & #2 & #3  \\
+                        #4 &  #5 & #6 \\
+                        #7 &  #8 & #9
+                          \end{array}\right| }
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% greek letter shortcuts
+
+\newcommand{\ga}{\alpha}                  %gives you a greek alpha
+\newcommand{\gb}{\beta}
+\newcommand{\gep}{\epsilon}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% general functions
+\newcommand{\notdiv}{\nmid}               % gives the not divide symbol
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% the following makes the numbering start with 1 in each section;
+% if you want the equations numbered 1 to N (without caring about
+% what section you are in, comment out the following line.
+\numberwithin{equation}{section}
+
+
+\begin{document}
+
+\title{Title of the Paper}
+
+\author{Steven J. Miller}
+\email{Steven.J.Miller@williams.edu} \address{Department of
+  Mathematics and Statistics, Williams College, Williamstown, MA 01267}
+
+%\author{Steven J. Miller\thanks{E-mail: \texttt{sjmiller@math.brown.edu}}}
+
+\subjclass[2000]{11M06 (primary), 12K02 (secondary).}
+
+\keywords{How to use TeX}
+
+\date{\today}
+
+\thanks{The author would like to thank to Daneel Olivaw for comments on an earlier draft. The author was supported by a grant from the University of Trantor, and it is a pleasure to thank them for their generosity.}
+
+\begin{abstract}
+The point of these notes is to give a quick introduction to some
+of the standard commands of LaTeX; for more information see any
+reference book. Thus we concentrate on a few key things that will
+allow you to handle most situations. For the most part, we have
+tried to have the text describe the commands; though of course we
+cannot do this everywhere. You should view both the .tex code and
+the output (either .pdf or .dvi) simultaneously.
+\end{abstract}
+
+\maketitle
+
+\tableofcontents
+
+\section{First Steps}
+
+LaTeX is a cross between a word processor and a programming
+language. The purpose is to allow one to write articles with lots
+of mathematical symbols and equations easily. The default is to be
+in non-mathematical mode; we discuss how to enter mathematical
+mode below. The first few lines of the code describe the
+formatting (font size is 12 for this, this is an article not a
+report or book, which packages we need (some are needed for
+including graphics, some for standard definitions of common
+symbols or expressions), short cut commands, how we want theorems,
+lemmas and the like to look, and so on). For now, you can keep
+these settings and just modify the text below.
+
+\subsection{General Mathematics}
+
+Garbage text for format purposes. Here is math mode:
+$\alpha^{\Gamma_3} + \beta^{12}_\gamma$. To enter math mode inside
+text, simply type a dollar sign. Type another dollar sign to exit
+math mode. Many of the symbols for everyday mathematics is as you
+would expect: you start with a slash and then end with the
+command. Thus lowercase Greek letters are slash letter, such as
+slash alpha, slash beta, slash gamma: $\alpha$, $\beta$, $\gamma$.
+Uppercase Greek letters (when they exist) are slash Gamma, slash
+Delta and so on: $\Gamma$, $\Delta$. Sums, products and integrals
+are slash sum, slash prod and slash int: $\sum$, $\prod$, $\int$.
+Less than and equal to is slash le: $\le$; similarly greater than
+or equal to is slash ge: $\ge$. Being an element of is slash in:
+$\in$; not an element of is slash not slash in: $\not\in$. Subset
+is slash subset $\subset$, and so forth. Note many of these are
+exactly as you'd expect: $a \in A \subset B$ and $c \not\in B$.
+Not equal to is slash neq and not divide is slash neq |: $4 \neq
+5$ and $4 \nmid 5$.
+
+Other common symbols like infinity are slash infty: $\infty$, the
+section sign is slash S: $\S$, union is slash cup: $\cup$, and
+intersection is slash cap: $\cap$. To do math blackboard is slash
+mathbb \{ letter \}; thus the integers and rationals are
+$\mathbb{Z}$ and $\mathbb{Q}$. We can put arrows over things by
+slash overrightarrow \{ text \}: $\overrightarrow{v}$. For the
+other direction it is overleftarrow, to underline it is overline,
+for a hat (like the Fourier transform) it is widehat:
+$\widehat{f}$. To have a square root it is slash sqrt \{ text \}:
+$\sqrt{4x+1}$; if we want an nth root it is slash sqrt [n] \{ text
+\}: $\sqrt[n]{4x+1}$.
+
+For multivariable calculus, we could write $\overrightarrow{v}$ for the vector $v$, or we could use our shortcut command $\arr{v}$. If we want a cross product, we could write $\arr{v} \times \arr{w}$. If we want a specific vector, we can do $\avec{1,2,3,4,5}$.
+
+Certain symbols (dollar signs, percent sign, pound sign, ambersand
+sign) are used in tex to mean other things: if we want these in
+texts we put a slash before them: \$, \%, \#, \&, \{, \},
+$\backslash$. The slash backslash gives a back slash. For example,
+the percent sign is used for comments that you do not want the tex
+compiler to read; anything on the line with the
+percent is commented out and not displayed. % thus you cannot see this.
+
+Many standard functions have shortcuts to make them look good: for
+example, $\backslash$cos, $\backslash$sin, $\backslash$tan,
+$\backslash$log and so on: $\cos$, $\sin$, $\tan$, $\log$. Compare
+how things look with and without the $\backslash$: $\cos(\log(x) +
+1)$ versus $cos(log(x)+1$; without the $\backslash$it italicizes.
+In fact, in math mode any text is automatically italiziced. We
+discuss later how to handle text in math mode.
+
+To do superscripts use a carot (shift-six) and to do subscripts
+use underscore (shift-minus sign). Thus x-squared is $x^2$ and
+integrating f(x) from a to b is $\int_a^b f(x)dx$. If you have
+more than one character as the superscript or subscript, you  must
+surround it by left and \}s: compare $x^2_{i+j}$ to $x^2_i+j$.
+Sometimes, to be safe, one surrounds both subscripts and
+superscripts with braces.
+
+If there are frequently used expressions, it is worthwhile to
+define shortcuts. Instead of typing $\backslash$alpha to get an
+alpha, I can type $\backslash$ga, because I have defined that to
+be a Greek alpha: $\ga$. Similarly for not divide it is
+$\backslash$notdiv (as a shortcut for $\backslash$nmid): $4
+\notdiv 5$ versus $4 \nmid 5$. The way we do shortcuts is earlier
+in the document, we do $\backslash$newcommand \{
+$\backslash$shortcut name \} \{ command \}. Thus for example the
+shortcut for greek lowercase alpha is $\backslash$newcommand \{
+$\backslash$ga \} \{ $\backslash$alpha \}.
+
+To do fractions, type $\backslash$frac \{ numerator \} \{
+denominator \}: $\frac{12}{34}$. If you have the ratio of two
+one-digit numbers, you do not need the braces: $\frac12$; however,
+compare $\frac{1}{12}$ to $\frac112$. These are common errors in
+tex (forgetting braces; the same also happens often with exponents
+or subscripts); that is why often it is best to include the
+braces. Remember every \{ must be paired with a \}.
+
+There are many different text enviroments; for webpages a good one
+to do is slash texttt \{insert text here \}, which would appear as
+$$\texttt{http://www.math.brown.edu/~sjmiller}.$$ Notice when we do
+this that the tilde is not displayed; to have it display use \$slash
+sim\$: thus we would write
+$$\texttt{http://www.math.brown.edu/$\sim$sjmiller}.$$
+
+Some people might have latex environments where it will replace a
+$\alpha$ with the Greek letter alpha. Note that if you type
+$\alpha$ it might replace it with what a real alpha, while if I
+type $\ga$, the user defined shortcut, it does not replace.
+
+
+\subsection{One Line Equations}
+
+Here's how to do an equation. Once you type $\backslash$begin \{
+equation \}, you've automatically entered math mode. Now if you
+type anything, say $\backslash$Lambda or $\backslash$epsilon or
+even some of our user-defined shortcuts, they will be properly
+formatted:
+
+\begin{equation}
+\frac{\Lambda'(s)}{\Lambda(s)} = s + \epsilon \int_a^b 3x^2
+e^{2\pi i x} dx.
+\end{equation}
+
+In the above, frac (with a $\backslash$before it) gives a
+fraction; it puts the first thing in curly brackets as the
+numerator, and the second as the denominator. To do Greek letters,
+type $\backslash$letter (for example, $\backslash$epsilon), while
+an integral is $\backslash$int, a sum is $\backslash$sum, and so
+on.
+
+I've made a shortcut for equations: $\backslash$be for begin
+equation and $\backslash$ee for end equation. It looks as follows
+
+\be \frac{\Lambda'(s)}{\Lambda(s)} = \epsilon \int_a^b 3x^2
+e^{2\pi i x} dx. \ee
+
+If you have a blank line between the text and the equation, it
+sometimes inserts space, and indents the next text as it is a new
+paragraph; if there is no blank line, it sometimes keeps them
+closer, and does not indent the following text.
+
+For example, let us compare the following to the earlier examples
+(where we had blank lines). Thus we follow this text with
+\begin{equation} \frac{\Lambda'(s)}{\Lambda(s)}\ =\ s + \epsilon
+\int_a^b 3x^2 e^{2\pi i x} dx.
+\end{equation} As there is no carriage return, this text is part
+of the same paragraph, and is thus not indented.
+
+As long as we are discussing equations, let us consider the case
+when we have more involved expressions, for example, we might have
+\begin{equation} (\frac{\sin(x^2+3x)}{x}+\frac{4}{e^x})^2.
+\end{equation} Note how the left and right parentheses are too
+short. There are two ways to fix this. One way is to use
+$\backslash$Big ( and $\backslash$Big ) (and Bigg if you need a
+bigger parentheses). A better way is to use $\backslash$left ( and
+$\backslash$right ); this automatically adjusts the size of the
+parentheses. Unlike the Big or Bigg commands, if you have a
+$\backslash$left ( you must match it with a $\backslash$right ).
+Thus
+\begin{equation}
+\left(\frac{\sin(x^2+3x)}{x}+\frac{4}{e^x}\right)^2.
+\end{equation}
+
+\subsection{Labeling Equations}\label{sec:labellingeqs}
+
+What if I want to keep track of the equation number, so that I can
+refer to it in the text? For example, consider
+\begin{equation}\label{eqlambdaprimelambda}
+\frac{\Lambda'(s)}{\Lambda(s)} = \epsilon \int_a^b 3x^2 e^{2\pi i
+x} dx.
+\end{equation} The way we label an equation is, after the
+$\backslash$begin \{ equation \}, we
+write $\backslash$label \{ labelname \}.
+
+Note the label. I can choose anything (as long as there are no
+numbers, just letters) for the name. I choose to label all
+equations with eq followed by a descriptive name; lemmas I start
+lem followed by a descriptive name, and so on.
+
+To refer to the equation, I merely have to write $\backslash$ref
+\{ eqname \}; for example for the previous equation it would be
+\ref{eqlambdaprimelambda}; however, it's better to write Equation
+\ref{eqlambdaprimelambda} or \eqref{eqlambdaprimelambda}. The
+difference between $\backslash$ref and $\backslash$eqref is that
+$\backslash$eqref automatically puts parentheses around the
+equation number.
+
+Whenever you add equations, you have to compile Latex twice to get
+the references correct. The advantage of using equation labels is
+that, if we add additional equations before the equation we want
+to refer to, the equation number of our equation changes; by using
+labels these are automatically updated.
+
+For example, consider the following.
+\begin{equation}\label{eq:gf1}
+g(x) = \int_0^\infty f(x,y) dy.
+\end{equation} We can refer to this and say by \eqref{eq:gf1} of
+\S\ref{sec:labellingeqs} we have.... You can label equations (or
+sections, theorems and so on) any way you want, though it is nice
+to have a standard method. I prefer to label equations by eq colon
+name, theorems by thm colon name, sections by sec colon name,
+sub-sections by subsec colon name, and so on.
+
+
+\subsection{Multi-Line Equations: Eqnarray}
+
+What if your equation is more than one line? You might want to use
+eqnarray instead of equation. The $\backslash$nonumber
+$\backslash$$\backslash$ is a carriage return without numbering
+that line; personally, I like to wait to the last line to number
+something. Here's an example:
+\begin{eqnarray}
+\frac{\Lambda'(t)}{\Lambda(t+1)} & = & f(x) g(s) + f(x-t) -
+g(s)f(x) \nonumber\\ \frac{\Lambda'(t)}{\Lambda(t+1)} & = & f(x -
+t).
+\end{eqnarray}
+
+Again, if I don't want to type begin eqnarray I can use the
+shortcut (that I defined above): \bea
+\frac{\Lambda'(t)}{\Lambda(t+1)} & = & f(x)
+g(s) + f(x-t) - g(s)f(x) \nonumber\\
+\frac{\Lambda'(t)}{\Lambda(t+1)} & = & f(x - t). \eea
+
+Here, I've chosen to use bea to stand for begin equation array.
+You can define your shortcuts almost freely (you can't use numbers
+in a shortcut definition).
+
+The formatting is done by the ampersand signs, \&. (Note: if you
+have a special symbol which you want to display in Latex, you put
+a $\backslash$before it. Thus, to print a percent-sign in math
+mode is \%, or to print a pound sign is \#.) The eqnarray
+environment has two ampersands per line, and centers the lines on
+what is between the ampersands.
+
+Usually, one does not repeat the left hand side. Thus, it is more
+natural to write
+
+\begin{eqnarray}
+\frac{\Lambda'(t)}{\Lambda(t+1)} & = & f(x) g(s) + f(x-t) -
+g(s)f(x) \nonumber\\  & = & f(x - t).
+\end{eqnarray}
+
+Here's a somewhat lengthier example:
+
+\begin{eqnarray}
+\frac{1}{m}\sum_p^{m^\sigma} p^{-\foh} & \le & \frac{1}{m} (
+\sum_p^{m^\sigma} \frac{1}{p})^{\foh} ( \sum_p^{m^\sigma}
+1)^{\foh} \nonumber\\ & \le & \frac{1}{m} (\log \log m^{\sigma} +
+A)^{\foh} (Li(x) + O(x^{\foh} \log x))^{\foh} \nonumber\\ & \ll &
+\frac{1}{m} (\log \log m)^{\foh} (\frac{2m^{\sigma}}{\log
+m})^{\foh} \nonumber\\ & \ll & m^{\foh \sigma - 1} (\frac{\log
+\log m}{\log m})^{\foh}.
+\end{eqnarray}
+
+In the above, I have used a user defined command, $\backslash$foh.
+That is a shortcut I've created to write $\frac{1}{2}$. If there
+is something you use many times, you should have a shortcut for
+it.
+
+Note several things look wrong in the above equation. The
+parentheses are wrong-sized, and the mathematical function Li (the
+logarithmic integral \begin{equation} Li(x) = \int_2^x
+\frac{dt}{\log t}, \end{equation} which estimates the number of
+primes at most $x$) is italicized. To remove the italization we
+write inside math mode \{ $\backslash$rm text not to be italicized
+\}:
+\begin{eqnarray}
+\frac{1}{m}\sum_p^{m^\sigma} p^{-\foh} & \le & \frac{1}{m} \left(
+\sum_p^{m^\sigma} \frac{1}{p}\right)^{\foh} \left(
+\sum_p^{m^\sigma} 1\right)^{\foh} \nonumber\\ & \le & \frac{1}{m}
+\left(\log \log m^{\sigma} + A\right)^{\foh} \left({\rm Li}(x) +
+O\left(x^{\foh} \log x\right)\right)^{\foh} \nonumber\\ & \ll &
+\frac{1}{m} (\log \log m)^{\foh} \left(\frac{2m^{\sigma}}{\log
+m}\right)^{\foh} \nonumber\\ & \ll & m^{\foh \sigma - 1}
+\left(\frac{\log \log m}{\log m}\right)^{\foh}.
+\end{eqnarray}
+
+Finally, instead of eqnarray one often uses align:
+\begin{align} f(x,y) & = (x+y)^3 \nonumber\\ & = x^3 + 3x^2y + 3xy^2 + y^3.
+\end{align} Note it spaces things slightly differently than
+eqnarray:
+\begin{eqnarray} f(x,y) & = & (x+y)^3 \nonumber\\ & = & x^3 + 3x^2y + 3xy^2 + y^3.
+\end{eqnarray} If you want to use align and add additional spaces,
+one can do $\backslash$space: \begin{align} f(x,y) &\ =\ (x+y)^3
+\nonumber\\ &\ =\ x^3 + 3x^2y + 3xy^2 + y^3.
+\end{align}
+
+\subsection{Lemmas, Propositions, Theorems and Corollaries}
+
+Now let's add a lemma. Below is how one would write it. Notice all
+the English text is italicized. We'll follow the lemma immediately
+with a proposition. With the way our file is set up, we start a
+lemma with $\backslash$begin \{ lem \}, and end it with
+$\backslash$end \{ lem \}.
+
+\begin{lem} Let $\hat{\phi} (\xi) = \int_0^\infty \phi(x) e^{2 \pi i x} dx.$ Then
+$\hat{\phi_r} (\xi) = \frac{1}{r} \hat{\phi}(\xi / r). $
+\end{lem}
+
+\begin{prop}
+If $f \in \mathcal{C}^3$ and $f'(0) = 0, \ f''(0) > 0$ then $0$ is
+a local minimum.
+\end{prop}
+
+\begin{proof} This follows immediately from the well known relation
+\begin{equation}
+3x + 2y = 4z,
+\end{equation} which completes the proof. \end{proof}
+
+Notice the proof environment above. We start with
+$\backslash$begin \{ proof \}, follow it with the proof (which can
+contain equations), and then end with $\backslash$end proof. The
+nice thing is this automatically italicizes the word proof, and
+ends with a box (which stands for QED, that which was to be shown,
+the symbol often used to indicate the end of the proof). It is
+important that the end proof be on the same line as the last text,
+or there will be extra spacing.
+
+\bigskip
+
+
+\noindent \emph{Proof:} Here we do it without using the proof environment. This follows immediately from the well known relation
+\begin{equation}
+3x + 2y = 4z,
+\end{equation} which completes the proof. \hfill $\Box$
+
+\bigskip
+
+The following is a new lemma, and what is inside the [] gives the
+lemma a name.
+
+\begin{lem}[Value of $\zeta(2)$]
+Let $\zeta(s)$ denote the Riemann Zeta Function. Then
+\begin{equation}
+\zeta(2) = \frac{\pi^2}{6}.
+\end{equation}
+\end{lem}
+
+You can label lemmas just like you would equations:
+
+\begin{thm}\label{thm:implicitequationn}[The Implicit Equation] Let
+$x, y, z \in \C$. Then
+\begin{equation}
+x^y + y^z + z^x = -1
+\end{equation}
+\end{thm}
+
+If you view the file, you will notice that the name of the above
+is italicized. It is better to put the name first, then the label:
+
+\begin{thm}[The Implicit Equation]\label{thm:implicitequation} Let
+$x, y, z \in \C$. Then
+\begin{equation}
+x^y + y^z + z^x = -1
+\end{equation}
+\end{thm}
+
+By Theorem \ref{thm:implicitequation}, we see that the desired
+expression equals $-1$. Note that you often have to compile twice
+before the labels are correct.
+
+\begin{cor}
+$x = y = z = 1$ is not a solution to the Implicit Equation from
+Theorem \ref{thm:implicitequationn}.
+\end{cor}
+
+\begin{cor}[Bob's Observation]
+$x = y = -1, \ z = 1$ is a solution to the Implicit Equation from
+Theorem \ref{thm:implicitequationn}.
+\end{cor}
+
+\begin{rek}[Seldon's Remark] Here is how you do a remark; notice
+that the remark is italicized. \end{rek}
+
+\subsection{Using Subsubsections}
+
+If we wanted, we could put subsubsections in a section. Again,
+$\backslash$section is section, $\backslash$subsection is a
+subsection, $\backslash$subsubsection is a subsubsection; you then
+put the name between braces.
+
+\subsubsection{Pythagoras}
+
+If a subsection is very long, we might want to have
+sub-subsections in the subsections. The commands are exactly what
+you think.
+
+\begin{lem}[Lengths of Sides]
+The sum of the lengths of any two sides of a triangle are greater
+than the third length.
+\end{lem}
+
+\subsubsection{Garbage}
+
+Here is another subsubsection.
+
+Here is some more garbage text. \\ And here is some more.
+
+Note the double $\backslash$above forces a carriage return. More
+gobbledegook follows here, such as the quick brown fox and one
+bright day in the middle of the night.
+
+\noindent If you start a paragraph with $\backslash$noindent then
+there is no indentation.
+
+
+
+\subsubsection{New Pages}
+
+We are now going to force a new page. The next subsubsection will
+start on a new page. We do this by $\backslash$newpage.
+
+\newpage
+
+
+\subsubsection{Prime Number Theorem}
+
+Below is the Prime Number Theorem. If we assume the Riemann
+Hypothesis we can take $\alpha = \frac{1}{2} + \epsilon$:
+\begin{equation}
+\pi(x)\ = \ \frac{x}{\log x} \ + \ O(x^\alpha)
+\end{equation}
+
+In the next subsection we discuss tables. We add a slash newpage
+command below to start it on a new page.
+
+\newpage
+
+\subsection{Tables}
+
+We give an example of how to insert tables into a document. In
+Tables \ref{tab:14families} and \ref{tab:2comparisons} we provide
+some information from investigations of families of elliptic curves.
+Note the structure of how we do a table. We start with a slash begin
+\{table\} (and end with a slash end \{table\}). We then have the
+center command (which is ended later). The next line is slash begin
+\{tabular\}, followed by combinations of vertical lines and the
+letters l, c, r. The letters stand for left, center and right, and
+refer to how the text in that column is justified. The | give
+vertical lines. Horizontal lines are inserted by the command slash
+hline. Note the different entries are surrounded by ampersand signs
+\&, and the rows are ended with slash slash. If you want a table
+entry to be in math mode, simply surround it with dollar signs (see
+Table \ref{tab:2comparisons}).
+
+\textbf{It is very important that you put the table label in the
+correct spot!}. After the slash end tabular, you may insert a
+caption. This is done with the command: slash caption \{, followed
+by all the captioning text you want, then ended with \}. Immediately
+after the caption comes the label, which is of the form slash label
+\{label name\}. \textbf{AFTER you have added the label, then you end
+the centering, and then you end the table.}
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|l||c|c|c|c|r|}
+  \hline
+    \textbf{Family} &  \textbf{Median $\widetilde{\mu}$} &  \textbf{Mean $\mu$} &
+    \textbf{StDev $\sigma_\mu$} &  \textbf{log(conductor)} &
+    \textbf{Number}\\
+    \hline \hline
+\ \ 1: [0,1,1,1,T]   & 1.28  &  1.33  &  0.26 & [3.93, 9.66] &  7 \\
+\ \ 2: [1,0,0,1,T]   & 1.39  &  1.40  &  0.29 & [4.66, 9.94] & 11 \\
+\ \ 3: [1,0,0,2,T]   & 1.40  &  1.41  &  0.33 & [5.37, 9.97] & 11 \\
+\ \ 4: [1,0,0,-1,T]  & 1.50  &  1.42  &  0.37 & [4.70, 9.98] & 20\\
+\ \ 5: [1,0,0,-2,T]  & 1.40  &  1.48  &  0.32 & [4.95, 9.85] & 11\\
+\ \ 6: [1,0,0,T,0]   & 1.35  &  1.37  &  0.30 & [4.74, 9.97] & 44\\
+\ \ 7: [1,0,1,-2,T]  & 1.25  &  1.34  &  0.42 & [4.04, 9.46] & 10\\
+\ \ 8: [1,0,2,1,T]   & 1.40  &  1.41  &  0.33 & [5.37, 9.97] & 11\\
+\ \ 9: [1,0,-1,1,T]  & 1.39  &  1.32  &  0.25 & [7.45, 9.96] & 9\\
+10: [1,0,-2,1,T]  & 1.34 &   1.34 &   0.42 & [3.26, 9.56] & 9\\
+11: [1,1,-2,1,T]  & 1.21 &   1.19 &   0.41 & [5.73, 9.92] & 6\\
+12: [1,1,-3,1,T]  & 1.32 &   1.32 &   0.32 & [5.04, 9.98] & 11\\
+13: [1,-2,0,T,0]  & 1.31 &   1.29 &   0.37 & [4.73, 9.91] & 39\\
+14: [-1,1,-3,1,T] & 1.45 &   1.45 &   0.31 & [5.76, 9.92] & 10\\
+\hline\hline
+    \textbf{All Curves}  & 1.35 &   1.36 &   0.33  &  [3.26, 9.98] &
+    209\\
+    \textbf{Distinct Curves} & 1.35 & 1.36 & 0.33 & [3.26, 9.98] &
+    196
+    \\
+  \hline
+\end{tabular}
+\caption{First normalized zero above the central point for $14$
+one-parameter families of elliptic curves of rank $0$ over $\Q$
+(smaller conductors)} \label{tab:14families}
+\end{center}
+\end{table}
+
+Note the tables do not always appear where you want them to. You can
+try to force them to be in certain places, but the TeX program puts
+the tables around where you want, taking into account how much space
+is available on the pages. Note, for instance, that only this
+paragraph is between the two tables, but they appear on different
+pages.
+
+
+
+\begin{table}
+\begin{center}
+\begin{tabular}{|l||c|c|c|c|}
+  \hline
+\textbf{Family} & \textbf{Median} & \textbf{Mean} & \textbf{Std.
+Dev.} & \textbf{Number} \\ \hline
+Rank 2 Curves, Families Rank 0 over $\Q$ & 1.926 & 1.936 & 0.388 & 701 \\
+Rank 2 Curves, Families Rank 2 over $\Q$ & 1.642 & 1.610 & 0.247 & \ \ 64 \\
+\hline
+\end{tabular}
+\caption{First normalized zero above the central point. The first
+family is the 701 rank $2$ curves from the $21$ one-parameter
+families of rank $0$ over $\Q$ from Table 3 with $\log({\rm cond})
+\in [15,16]$; the second family is the 64 rank $2$ curves from the
+$21$ one-parameter families of rank $2$ over $\Q$ from Table $4$
+with $\log({\rm cond}) \in [15,16]$.} \label{tab:2comparisons}
+\end{center}
+\end{table}
+
+
+
+
+\subsection{Matrices and Shortcuts}
+
+If you have symbols you use many times, it is often convenient to
+define a shortcut. For example, I have defined $\backslash$foh to
+be $\frac{1}{2}$ (stands for fraction: one half).
+
+Let's do some more detailed examples. To do a $5 \times 5$ matrix
+type
+\begin{equation}
+A =  \left( \begin{array}{ccccc}
+                        1  & 2  & 3  & 4  & 5  \\
+                        6  & 7  & 8  & 9  & 10 \\
+                        11 & 12 & 13 & 14 & 15 \\
+                        16 & 17 & 18 & 19 & 20 \\
+                        16 & 17 & 188 & 19 & 20 \\
+                        121 & 122 & 123 & 124 & 125
+                          \end{array}\right)
+\end{equation}
+
+Some important points to note: the $\backslash$left and the
+$\backslash$right draw the left and right parentheses around the
+matrix, automatically adjusting to the proper size. Then we have a
+$\backslash$begin array, followed by five cs in curly braces. This
+gives a $5 \times 5$ matrix, with each element centered. If
+instead of cs we used ls, it would left-justify (and rs would
+right justify). For example,
+\begin{equation}
+A =  \left( \begin{array}{rrrrr}
+                        1  & 2  & 3  & 4  & 5  \\
+                        6  & 7  & 8  & 9  & 10 \\
+                        11 & 12 & 13 & 14 & 15 \\
+                        16 & 17 & 18 & 19 & 20 \\
+                        121 & 122 & 123 & 124 & 125
+                          \end{array}\right)
+\end{equation}
+
+Notice we use ampersand signs \& between the various elements;
+this is similar to multi-line equations, where we used the
+ampersands to center things. We end each line with
+$\backslash$$\backslash$, which is a carriage return.
+
+Latex allows you to define shortcuts that are functions of up to
+nine arguments with ease. Thus, I can have shortcut definitions
+for $2 \times 2$ and $3 \times 3$ matrices. To use my shortcuts
+(the newcommands at the top), one just types
+\begin{equation}
+A = \mattwo{a}{b}{c}{d}
+\end{equation}
+or
+\begin{equation}
+B = \matthree{a}{b}{c}{d}{e}{f}{g}{h}{i}.
+\end{equation}
+
+If you want determinants, you can do
+\begin{equation}
+\det(A) = \dettwo{a}{b}{c}{d}, \ \ \ \det(B) =
+\detthree{a}{b}{c}{d}{e}{f}{g}{h}{i}.
+\end{equation}
+
+Two remarks on the above equation. First, $\backslash$det gives a
+nice determinant. For functions like det, sin, cos, if you don't
+put a $\backslash$before them, Latex interprets them as text
+(letters). Thus, compare $\det(A), \cos(A), \sin(A), \log(A)$ to
+$det(A), cos(A), sin(A), log(A)$.
+
+Second, a $\backslash$followed by a space gives a space. Latex
+ignores (for the most part) spaces. In the above, the
+$\backslash$space $\backslash$space $\backslash$space gives three
+spaces (ie, helps format).
+
+Finally, here are some other shortcuts I've created that you might
+find useful. Feel free to make your own!
+
+Here is one to do a two case argument:
+\begin{equation}
+\twocase{\Lambda(n) = }{\log p}{if $p$ is a prime
+power}{0}{otherwise.}
+\end{equation}
+
+Here is a way to do a three case argument.
+\begin{equation}
+\threecase{\mu(n) = }{1}{if $n = 1$}{(-1)^r}{if $n$ is the product
+of $r$ distinct primes}{0}{if $n$ is divisible by the square of a
+prime.}
+\end{equation}
+
+For the Legendre / Jacobi symbol with modulus $p$, simple use
+$\js{x}$.
+
+The standard sets of numbers encountered are the natural numbers
+$\N$, the integers $\Z$, the reals $\R$, and the complex numbers
+$\C$.
+
+If we want to do vectors, we just do $\overrightarrow{v}$; set
+operations are $x \in A \cup B \cap C \subset D = G \oplus H$.
+
+Sometimes we prefer to write \be x \ = \ \bigcup_{i=1}^\infty A_i
+\ \ \ instead of \ \ \ x \in \cup_{i=1}^\infty A_i. \ee
+
+Note the above has the text in emphasis mode. To avoid this, use
+either mbox or text (text is better): \be x \ = \
+\bigcup_{i=1}^\infty A_i \ \ \ \mbox{instead of} \ \ \ x \in
+\cup_{i=1}^\infty A_i. \ee
+
+Here it is with text instead of mbox. \be x \ = \
+\bigcup_{i=1}^\infty A_i \ \ \ \text{instead of} \ \ \ x \in
+\cup_{i=1}^\infty A_i. \ee
+
+Here it is using remove emphasis $\backslash$rm: \be x \ = \
+\bigcup_{i=1}^\infty A_i \ \ \ {\rm instead of} \ \ \ x \in
+\cup_{i=1}^\infty A_i. \ee Note with the remove emphasis that we
+have lost the space between instead and of; to add it back we
+would need a $\backslash$space.
+
+To do a unit vector, one can write $\widehat{i}, \widehat{j},
+\widehat{k}$. We also have $\prod_{i=1}^5 \sum_{j=1}^8 a_{ij}$.
+
+We have now come to the end of the first section -- it will
+automatically start the next section on a new page.
+
+I like to put a lot of percent signs between sections (and a few
+carriage returns) to make editing easier.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Environments I}
+
+\subsection{Shortcut Environments}
+
+To do an equation, recall we need $\backslash$begin curly brackets
+equation curly brackets. Thus, we write
+
+\begin{equation}
+\sum_{n=1}^\infty \frac{1}{n^2} = \frac{\pi^2}{6} = \frac{8}{3}
+\left(\int_0^1 \frac{1}{1+x^2}dx\right)^2. \end{equation}
+
+If you have a lot of equations or arrays of equations, you don't
+want to keep typing begin equation and end equation.
+
+We've created some shortcuts: $\backslash$be will be begin
+equation; $\backslash$ee will end the equation; bea and eea will
+begin and end arrays of equations.
+
+Thus, \be\sum_{n=1}^\infty \frac{1}{n^2} = \frac{\pi^2}{6} =
+\frac{8}{3} \left(\int_0^1 \frac{1}{1+x^2}dx\right)^2  \ee does it
+as an equation, and \bea \sum_{n=1}^\infty \frac{1}{n^2} &=&
+\frac{\pi^2}{6} \nonumber\\ &=& \frac{8}{3} \left(\int_0^1
+\frac{1}{1+x^2}dx\right)^2 \eea
+
+does it as an array of equations.
+
+Other useful commands: $\backslash$textbf \} text you want in bold
+\{: \textbf{this will put any text in bold}; $\backslash$emph \{
+text you want emphasized \}: \emph{this will emphasize or
+italicize text}; $\backslash$underline \{ text to underline \}:
+\underline{this will underline}.
+
+
+\subsection{Enumeration, Itemizing, and General Latex and Linux Commands}
+
+We will use the shortcuts for the enumeration environment. First,
+the long form. We start with $\backslash$begin \{ enumerate \}.
+This starts the enumeration (ie, a list of items with each item
+numbered). Each item in the enumerated list starts with
+$\backslash$item. To have sub-items we use $\backslash$subitem;
+however, there are no bullet points or marks here; we can add a
+bullet with $\bullet$. We end with $\backslash$end \{ enumerate
+\}.
+
+\begin{enumerate}
+
+\item in whatever directory you want to latex, save the files
+template.tex, yl.eps. \subitem This will give you a tex template
+with the image yl.eps. \subitem $\bullet$ Not the \$
+$\backslash$bullet \$ gives a bullet point.
+
+\item The following commands work in many unix environments: at
+the unix prompt, move into the directory where you've saved the
+templates. To edit, type emacs template.tex \& (the ampersand
+makes sure it opens in a new window). To compile is
+\textbf{Control-c-f}. Type xdvi template.dvi \& to view your
+compiled file. If you make changes to the latex source file, just
+clicking on the xdvi file will (if you've compiled the latex file)
+automatically update the dvi file. control-c (let go of the two
+keys) ` displays error messages (it's on the same key as the
+tilde, don't hold down shift).
+
+\end{enumerate}
+
+If instead of numbering we wanted bullets, we just change
+enumerate to itemize. Here $\backslash$subitem also does not give
+bullet points. Instead of using bullets we could use diamonds,
+$\backslash$diamond.
+
+\begin{itemize}
+
+\item To open a file for editing using emacs, type emacs filename
+\&; the ampersand opens the file in a new window. \subitem
+$\clubsuit$ Control-x-w saves without exiting; \subitem $\diamond$
+Control-x-c saves with exiting.
+
+\item General: We list some general commands: \subitem $\diamond$
+cd directory changes the directory, \subitem $\diamond$ ls lists
+all files and sub-directories in current directory.
+
+\end{itemize}
+
+You can also use my shortcuts for these environments.
+
+\ben
+
+\item ben stands for begin enumerate.
+
+\item een stands for end enumerate.
+
+\item each line starts with $\backslash$item.
+
+\een
+
+Itemize is similar.
+
+\bi
+
+\item bi is begin itemize.
+
+\item ei is end itemize.
+
+\item each line starts with $\backslash$item.
+
+\ei
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Graphics and Color}
+
+\subsection{Inserting Graphics}
+
+Let's end by inserting a picture (image courtesy of J. Ax and S.
+Kochen). The image extension should be .eps, and in the same
+directory as everything. We display it in Figure \ref{fig:yl}
+
+\begin{figure}
+\begin{center}
+\scalebox{.5}{\includegraphics{yl.eps}}
+\caption{\label{fig:yl} The infamously famous yl image.}
+\end{center}
+\end{figure}
+
+On some systems, if I try to view the .dvi file I have trouble
+seeing the picture; I need to convert it to a .ps file and then
+use ghostview or some such.
+
+\subsection{Color}
+
+If you have included the color package, you can write in color.
+Simply use the following:
+
+{\rmfamily\color[rgb]{.55,0,.15}This is to type in a shade of red.
+There are three parameters, red green blue, I think. Each is a
+number between 0 and 1. Note you start with a brace followed by
+rmfamily then the color specification, and you end with another
+brace like this.}
+
+If we type here, it is in black, the default color.
+
+{\color[rgb]{0,0,.85} Now we are in a shade of blue. You can also
+use \textbf{bold test} in a color, as well as math notation, such
+as $a_i^j x_{ij} = \pi^e$, or whatever you want.}
+
+We can also {\color[rgb]{1,0,0}switch colors to pure red} or to
+{\color[rgb]{0,0,1}pure blue} or back to black in the middle of a
+paragraph.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Environments II}
+
+\subsection{Lists}
+
+Enumerating lists:
+
+\begin{enumerate}
+
+\item This is the first item.
+\item This is the second item.
+\item This is the last item.
+
+\end{enumerate}
+
+
+\subsection{Emphasize and Bolding}
+
+If you use \textbf{this, then whatever is inside will be in bold},
+while if you use \emph{this, everything will be emphasized}, and
+\underline{this will cause the text to be underlined}.
+
+I have created a shortcut for textbf, namely \tbf{this will bold
+text as well}.
+
+
+\subsection{Centering Text}
+
+One can also center text:
+
+\begin{center}
+
+Everything typed in here is centered.
+
+Isn't centering wonderful?
+
+I thought so too.
+
+\end{center}
+
+
+This is also wonderful. \\
+
+The two slashes above give a extra carriage return. You can only
+have one double slash at the end of a line. If you want more, use
+bigskip.
+
+
+\subsection{Refering to Bibliography}
+
+The bibliography is included at the end. To refer to items, simply
+type \cite{RSZ}. Note all the items in the bibliography have two
+abbreviations, one in brackets (which is what is displayed in the
+bibliography), and one in curly braces (the shortcut name); I
+often have the two the same..
+
+Again, what is in brackets is what the computer will print; what
+is in curly braces is how you refer to it.
+
+Thus, to refer to the book by Khinchin you should type
+$\backslash$Kh: \cite{Kh}. We can also refer to the appendices,
+such as see Appendix \ref{sec:sayshell} or see
+\S\ref{sec:sayshell}.
+
+\subsection{Font sizes}
+
+We describe some different font sizes:
+
+\begin{itemize}
+
+\item \huge This is huge.
+
+\item \LARGE This is LARGE
+
+\item \Large This is Large
+
+\item \normalsize You guessed it.
+
+\item \tiny This is tiny.
+
+\item \normalsize Back to normalsize.
+
+\end{itemize}
+
+Notice in the above how the bullet size changes; the reason is
+that we start off in normal size, but when we type
+$\backslash$huge we enter huge mode; we are in huge mode until we
+type $\backslash$LARGE, when we enter LARGE mode. Thus the bullet
+points are adjusted.
+
+Consider the matrix $A = \mattwo{a}{b}{c}{d}$. Boy does this look
+bad compiled. How about $A = \tiny \mattwo{a}{b}{c}{d}$. This
+looks better.
+
+
+\section{Document class and global formatting}
+
+First off, you can adjust the margins of your document. Below are
+the commands used in this document -- by playing with the numbers
+you can obtain the margins you want. We have used the verbatim
+command (slash begin \{verbatim\}) so that the TeX program will not
+convert our commands (ie, so it will just display them).
+
+\begin{verbatim}
+\addtolength{\textwidth}{2cm} \addtolength{\hoffset}{-1cm}
+\addtolength{\marginparwidth}{-1cm} \addtolength{\textheight}{2cm}
+\addtolength{\voffset}{-1cm}
+
+\end{verbatim}
+
+You can also make the document double spaced easily. For example,
+type
+\begin{verbatim}\baselinestretch}{2}\end{verbatim} at the beginning
+of the document and your document will be double spaced. If you use
+a number between 1 and 2, you get something between single and
+double spaced.
+
+We have used the document class amsart (AMS article) and a font size
+of 12: this is evidenced by the command (at the start of the file)
+\begin{verbatim}\documentclass[12pt,reqno]{amsart}\end{verbatim}
+The reqno means right equation numbers.
+
+We have also used (in the beginning) \begin{verbatim}
+\subjclass[2000]{ (primary),  (secondary).}
+
+\keywords{How to use TeX}
+\end{verbatim}
+
+This inserts the subject classification numbers and keywords. The
+subject classifications can be found online at
+$$\texttt{http://www.ams.org/msc/}.$$
+
+Finally, we remark that an article class of amsart is not the only
+choice: one can also use article, report, book, .... More on these
+can be found online.
+
+\section{Further Reading}
+
+There are numerous sources online for additional TeX help. See for
+example $$\texttt{http://www.giss.nasa.gov/tools/latex/}$$ or
+$$\texttt{http://www.stat.washington.edu/software/latex/}$$ or all
+the sites referenced at
+$$\texttt{http://coulomb.ecn.purdue.edu/~bulsara/LaTeX/latex.html}$$
+
+\newpage
+
+\section*{Acknowledgements}
+
+Many of these shortcut commands are from a .tex template that Alex
+Barnett was kind enough to share with me.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\appendix
+
+\section{Psychohistorical Dynamics of the Sayshell Republic: An Analysis of
+the Rise of the Mule}\label{sec:sayshell}
+
+This is the first appendix, works like you would expect.
+
+\section{Random Walks in High Dimensions: Choosing a Universe Interesting
+for Drunks}
+
+This is the second appendix.
+
+
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% note the form of the bibliography. start with a bibitem.
+% you refer to an entry in the bibliography by using the label in braces
+% the computer prints the label in brackets. often I have both the same, but
+% you don't have to.
+
+\begin{thebibliography}{9999}
+
+%number of characters controls spacing; must be longer than longest name
+
+\bibitem[Da]{Da}
+\newblock H. Davenport, \emph{Multiplicative Number Theory}, second
+edition, Graduate Texts in Mathematics \textbf{74},
+Springer-Verlag, New York, 1980, revised by H. Montgomery.
+
+\bibitem[Kh]{Kh}
+\newblock A. Y. Khinchin, \emph{Continued Fractions},  Third
+Edition, The University of Chicago Press, Chicago 1964.
+
+\bibitem[RSZ]{RSZ}
+\newblock Z. Rudnick, P. Sarnak, and A. Zaharescu, \emph{The
+Distribution of Spacings Between the Fractional Parts of
+$n^2\alpha$}, Invent. Math. \textbf{145} (2001), no. 1, 37--57.
+
+\end{thebibliography}
+
+\bigskip
+
+\end{document}
