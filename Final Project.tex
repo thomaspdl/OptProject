@@ -98,6 +98,7 @@
 \newcommand{\E}{\mathbb{E}}
 \newcommand{\Qoft}{\mathbb{Q}(t)}  %use in linux
 \newcommand{\sN}{\mathcal{N}}
+\newcommand{\sL}{\mathcal{L}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Finite Fields and Groups
@@ -297,16 +298,19 @@ $$
 The figure \ref{fig:FV1} shows how the solution to the ALP $\tilde{r}$ does not necessarily yield an approximation, $\Phi\tilde{r}$, as good as $\Phi r^*$, the projection of $J^*$ onto the subspace spanned by the basis functions $\phi_i$. Our next bound shows how we can relate the solution of the approximate linear program to the ``best'' approximation in the space spanned by $\Phi$ -- $\Phi r^*$.
 
 \begin{thm}\label{thm:alpbound2}
-
+Let $e$ be in $\text{span}(\phi_1,\dots,\phi_k)$ and by $c$ denote a probability distribution on the state space. Then if $\tilde{r}$ is an optimal solution to the approximate linear program,
+$$
+||J^* - \Phi\tilde{r}||_{1,c} \leq \frac{2}{1-\alpha} \min_r || J^* - \Phi r||_{\infty}
+$$
 \end{thm}
 
-Above, the notation $||J||_{\infty}$ signifies $\max_{x \in S} |J(x)|$. Theorem \ref{thm:alpbound2} is given in more general terms, but the notation is intentional as it maps directly onto the notation used throughout the exposition of the problem and results regarding it.
+Above, the notation $||J||_{\infty}$ signifies $\max_{x \in S} |J(x)|$. Theorem \ref{thm:alpbound2} is given in more general terms, but the notation is intentional as it maps directly onto the notation used throughout the exposition of the problem and results regarding it. The result is due to de Farias and Van Roy \cite{FV}.
 
 de Farias and Van Roy proceed to develop an improved bound, which can be sharper, as the bound given in Theorem \ref{thm:alpbound} does not take into account state-relevnace weights and instead in order for that bound to be small, it must be the case that the approximation shows low error across all states. This improved bound incorporates a weighted norm of the errors across states, depending upon how they are weighted in solving the ALP. We do not discuss this bound here, but it is mentioned because its development - through use of Lyupanov functions - is quite similar to the bound developed in another paper for the reduced linear program, discussed in Section \ref{solve_alp:cs} \cite{FV2}.
 
-\subsection{Constraint Sampling} \label{solve_alp:cs}
+\section{Reduced Linear Program -- Constraint Sampling} \label{solve_alp:cs}
 
-To approximate the approximate linear program, we create a new program called the ``reduced'' linear program or RLP. To create a RLP we set a number of constraints $m$, and because each constraint in the approximate linear program can be uniquely identified by a state, action pair, we introduce a probability distribution on the pairs which we denote by $\phi$. We also introduce a set $\sN$ to bound the possible solutions to the RLP, that is $\sN \subset \R^K$. We then generate a set $D$ of state, action pairs by independently sampling the space of state, action pairs according to $\phi$.
+To approximate the approximate linear program, we create a new program called the ``reduced'' linear program or RLP. To create a RLP we set a number of constraints $m$, and because each constraint in the approximate linear program can be uniquely identified by a state, action pair, we introduce a probability distribution on the pairs which we denote by $\phi$ -- the set of constraints will be denoted $\sL$, we will consider this to be a set indexing the constraints. We also introduce a set $\sN$ to bound the possible solutions to the RLP, that is $\sN \subset \R^K$. We then generate a set $D$ of state, action pairs by independently sampling the space of state, action pairs according to $\phi$.
 
 Therefore the program that we wish to solve is
 \begin{align*}
@@ -321,7 +325,93 @@ Pr[ | ||J^* - \Phi\hat{r}||_{1,c} - ||J^* - \Phi \tilde{r}||_{1,c}| \leq \epsilo
 $$
 $\delta$ is a confidence level regarding the closeness of the error of the RLP solution to that of the ALP solution.
 
-\section{Application to Playing Tetris}
+Because the solution to the relaxed linear program, as only some constraints are present, may not be a solution to the approximate linear program, we need to study two properties of using a reduced linear program
+\begin{itemize}
+\item Sample complexity of near-feasibility
+\item Sample complexity of approximation quality
+\end{itemize}
+
+Specifically, it is relevant for us to study how these properties can be obtained with respect to sampling constraints. The intuition behind this method is that if $|\sL|$ is infinite or huge and finite, each individual constraint may be inactive or only marginally affect the feasible region. Thus we hope we can only consider a subset of the constraints in $\sL$ and acheive a solution for the original problem that is feasible and of reasonable quality.
+
+\subsection{Complexity of Near Feasibility}
+Define the feasibility condition as follows: consider a set of linear constraints of the form
+$$
+y_z^T r + k_z \geq 0, \forall z \in \sL
+$$
+where $\sL$ is a set of indices for the constraints and $r \in \R^k$. Next we introduce a probability measure $\psi$ on $\sL$, an error tolerance $\epsilon$ and a confidence level $1-\delta$. 
+
+The role of the distribution $\psi$ is both to sample and to assess the resulting sample \cite{FV2}. Specifically, we use this error tolerance $\epsilon$ and $\psi$ to assess quality in the sense that we define our objective as finding a subset $W \subset \sL$ such that
+$$
+\sup_{\{r | y_z^Tr + k_z \geq 0, \forall z \in W\}} \psi(\{ z' | y_{z'}^T r + k_{z'}\}) \leq \epsilon
+$$
+
+When the condition regarding the subset $W$ is met, $W$ is said to lead to near-feasibility. Then Theorem \ref{thm:sample_complexity} can be proven, regarding the sample complexity of near feasibility \cite{FV2}.
+
+\begin{thm}\label{thm:sample_complexity}
+If we have any $\delta \in (0,1)$ and $\epsilon \in (0,1)$ and $m$ such that
+$$
+m \geq \frac{4}{\epsilon} (K \log \frac{12}{\epsilon} + \log \frac{2}{\delta})
+$$
+Then, a set of $m$ (possibly repeated) i.i.d. randoms draws according to $\psi$ from $\sL$, which we will call $W$, satisfies
+$$
+\sup_{\{r | y_z^Tr + k_z \geq 0, \forall z \in W\}} \psi(\{ z' | y_{z'}^T r + k_{z'}\}) \leq \epsilon
+$$ 
+with probability $1-\delta$.
+\end{thm}
+
+The above, in asymptotic terms, tells us that if we have a sample size on the order of
+$$
+m = O(\frac{1}{\epsilon}(K \log \frac{1}{\epsilon} + \log \frac{1}{\delta}))
+$$
+then with probability at least $1-\delta$ we have that there is a $X \subset \sL$ such that $\psi(X) \geq 1 - \epsilon$ where every vector satisfying the constrants in $W$ (our sample of size $m$) also satisfies all the constraints in $Z$. That is, our sample of size $m$, with probability $1- \delta$, is near feasible. This is a very useful gaurantee because it is {\em independent} of the number of the constraints, and requires no knowledge about their structure.
+
+\subsection{Complexity of Approximation Quality}
+First a type of function is introduced which will be crucial to proving a bound on the quality of approximation. For any function $V: S \rightarrow \R$ define the scalar
+$$
+\Beta_V = \max_{x \in S} \frac{\alpha(P_{u^*}V)(x)}{V(x)}
+$$
+corresponding to some policy $u^*$, in this case the optimal policy. This scalar is a measure of the maximum ratio of the next expected value of a state as compared to the current value over the entire state space. If this is small it conveys some sense of stability of the values of $V(x)$ over our system.
+
+Further we can define a family of probability distributions over $S$ for each policy $u$ where the probability of each state is proportional to the expected discounted number of visits given an initial disribution according to $c$ as given below
+$$
+\mu_u^T = (1-\alpha)c^T(I - \alphaP_u)^{-1}
+$$
+
+Next Van Roy and de Farias define, for each Lyapunov function $V$, a probability distribution over $S$
+$$
+\mu_{u,V}(x) = \frac{\mu_u(x)V(x)}{\mu_u^TV}
+$$
+a distribution over state,action pairs
+$$
+\psi_{u,V}(x,a) = \frac{\mu_{u,V}(x)}{|A_x|}
+$$
+a constant
+$$A = \max_{x \in S} |A_x|$$
+and a constant
+$$\theta = \frac{1 + \Beta_V}{2} \frac{\mu_{u^*}T V} { c^T J^*} \sup_{r \in N} ||J^* - \Phi r||_{\infty, 1/V}$$
+It is easy to verify that the distributions defined are in fact probability distributions.
+
+With these defined, we can now present de Farias and Van Roy's main result \cite{FV2}.
+
+\begin{thm}
+Consider $\epsilon$, $\delta$ in $(0,1)$. Let $u^*$ be an optimal policy and $W$ be a set of $m$ state, action pairs sampled according to $\psi_{u^*,V}$ for some Lyupanov function $V$, where
+$$
+m \geq \frac{16A\theta}{(1-\alpha)\epsilon} (K \log \frac{48 A\theta}{(1-\alpha)\epsilon} + \log \frac{2}{\delta})
+$$
+Let $\tilde{r}$ be an optimal solution of the approximate linear program such that $\tilde{r} \in \sN$, and allow $\hat{r}$ to be an optimal solution of the relaxed linear program. Then with probability at least $1-\delta$
+$$
+||J^* - \Phi \hat{r} ||_{1,c} \leq ||J^* - \Phi \tilde{r} ||_{1,c} + \epsilon ||J^*||_{1,c}
+$$
+\end{thm}
+
+The important things to note in this bound are the dependence on $V$ and $\sN$. Choice of these in general requires some intuition regarding the optimal policy, but careful selection can clearly affect how well this bound performs. An application studied in the literature is queueing networks where using the methods above, if $V$ and $\sN$ are chosen properly, the number of constraints that must be sampled grows quadratically with respect to the state space \cite{FV2}. de Farias and Van Roy also show how to exchange complexity in terms of large action spaces for size in the state space -- this is undesirable as the sample size grows polynomially in the maximum number of actions available in some state.
+
+
+\section{Applications}
+
+In this section description of some problems suited to these methods are described, and  it is explained how they might be tackled within the framework given in the preceding sections.
+
+\subsection{Application to Playing Tetris}
 
 One application of interest to approximate dynamic programing is to playing the game of tetris. Tetris is a game played on a $16 \times 7$ board where each space either has a block or not. New blocks come in 7 different shapes, and must be placed into the grid one at a time. They must be supported by at least one block already in the grid. New blocks are chosen by the game at random to present the player. The player scores points by ``clearing'' a row, which means to fill it completely from one side to the other.
 
@@ -335,13 +425,6 @@ Tetris is an interesting stochastic control problem because it is easily to envi
 \end{itemize}
 
 All of the basis functions above make intuitive sense, but what about the constant 1? It allows for an offset in case that is helpful for modelling this problem - in modelling many problems . We do not perform simulations of these methods on tetris, as time did not permit, but provide this example to help illustrate the power of these methods. Empirical results from the literature are quite good -- use of approximate dynamic programming via the linear programming approach has yielded policies which perform as well, on average, as an expert human player.
-
-\section{Application to Queueing Networks}
-
-This application is explored in more depth because it provides a better medium by which to demonstrate the viability and success of the methods we discuss.
-
-[FILL IN ---------------]
-
 
 \section{Saddle Point Problems}
 
@@ -896,9 +979,13 @@ $$\mathbb{E}[\exp(\dfrac{\lVert \mathcal{K}_{y}(y) - Ky \rVert_{2}^{2}}{\sigma_{
 
 \section{Applying Saddle Point Methods to the Approximate Linear Program}
 
+The main innovation of this project is to apply the aforementioned saddle point methods to solving approximate dynamic programs. Specifically, we perform our analysis in the context of solving approximate and reduced linear programs and then study how well these approximate optimal solutions and the rate of convergence.
+
 [ TODO ]
 
 \section{Conclusions and Future Directions}
+
+
 
 [ TODO ]
 
