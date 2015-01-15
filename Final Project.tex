@@ -167,7 +167,9 @@
 % what section you are in, comment out the following line.
 \numberwithin{equation}{section}
 
+% useful for our project
 \DeclareMathOperator*{\argmin}{arg\,min}
+\newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
 
 
 \begin{document}
@@ -294,11 +296,15 @@ $$
 
 The figure \ref{fig:FV1} shows how the solution to the ALP $\tilde{r}$ does not necessarily yield an approximation, $\Phi\tilde{r}$, as good as $\Phi r^*$, the projection of $J^*$ onto the subspace spanned by the basis functions $\phi_i$. Our next bound shows how we can relate the solution of the approximate linear program to the ``best'' approximation in the space spanned by $\Phi$ -- $\Phi r^*$.
 
+\begin{thm}\label{thm:alpbound2}
 
+\end{thm}
 
-de Farias and Van Roy go on to develop an improved bound, which can be sharper, as the bound given in Theorem \ref{thm:alpbound} does not take into account state-relevnace weights and instead in order for that bound to be small, it must be the case that the approximation shows low error across all states. This improved bound incorporates a weighted norm of 
+Above, the notation $||J||_{\infty}$ signifies $\max_{x \in S} |J(x)|$. Theorem \ref{thm:alpbound2} is given in more general terms, but the notation is intentional as it maps directly onto the notation used throughout the exposition of the problem and results regarding it.
 
-\subsection{Constraint Sampling}
+de Farias and Van Roy proceed to develop an improved bound, which can be sharper, as the bound given in Theorem \ref{thm:alpbound} does not take into account state-relevnace weights and instead in order for that bound to be small, it must be the case that the approximation shows low error across all states. This improved bound incorporates a weighted norm of the errors across states, depending upon how they are weighted in solving the ALP. We do not discuss this bound here, but it is mentioned because its development - through use of Lyupanov functions - is quite similar to the bound developed in another paper for the reduced linear program, discussed in Section \ref{solve_alp:cs} \cite{FV2}.
+
+\subsection{Constraint Sampling} \label{solve_alp:cs}
 
 To approximate the approximate linear program, we create a new program called the ``reduced'' linear program or RLP. To create a RLP we set a number of constraints $m$, and because each constraint in the approximate linear program can be uniquely identified by a state, action pair, we introduce a probability distribution on the pairs which we denote by $\phi$. We also introduce a set $\sN$ to bound the possible solutions to the RLP, that is $\sN \subset \R^K$. We then generate a set $D$ of state, action pairs by independently sampling the space of state, action pairs according to $\phi$.
 
@@ -313,7 +319,7 @@ Denote an optimal solution to the relaxed linear program given above as $\hat{r}
 $$
 Pr[ | ||J^* - \Phi\hat{r}||_{1,c} - ||J^* - \Phi \tilde{r}||_{1,c}| \leq \epsilon ] \geq 1 -\delta
 $$
-$\delta$ is a confidence level regarding the closeness of the error of the RLP solution to that of the ALP solution
+$\delta$ is a confidence level regarding the closeness of the error of the RLP solution to that of the ALP solution.
 
 \section{Application to Playing Tetris}
 
@@ -328,7 +334,7 @@ Tetris is an interesting stochastic control problem because it is easily to envi
 \item The constant 1
 \end{itemize}
 
-All of the basis functions above make intuitive sense, but what about the constant 1? It allows for an offset in case that is helpful for modelling this problem - in modelling many problems . We do not perform simulations of these methods on tetris, as time did not permit, but provide this example to help illustrate the power of these methods. Empirical results from the literature are quite good -- use of approximate dynamic programming via the linear programming approach has yielded policies which perform as well, on average, as an expert human player [FIND CITATION]
+All of the basis functions above make intuitive sense, but what about the constant 1? It allows for an offset in case that is helpful for modelling this problem - in modelling many problems . We do not perform simulations of these methods on tetris, as time did not permit, but provide this example to help illustrate the power of these methods. Empirical results from the literature are quite good -- use of approximate dynamic programming via the linear programming approach has yielded policies which perform as well, on average, as an expert human player.
 
 \section{Application to Queueing Networks}
 
@@ -614,8 +620,6 @@ The addition of noise gives
 
 with $\omega \sim \mathcal{N}(0,1)$
 
-\newpage
-
 \section{ A specific Example of Saddle Point Problem}
 
 We now consider a particular  non smooth saddle point problem.
@@ -623,33 +627,22 @@ We now consider a particular  non smooth saddle point problem.
 \subsection{Introduction}
 
 In many applications, particularly imaging some saddle point problem occur. The following problem is a good example of such a problem.
-
 If we define:
 $$
 f(x) = \max_{y \in Y} \{ G(x) + (Kx,y) - J(y) \} 
 $$
-
-and if we are looking for the minimum of the of $f$ over the set $X$, the optimisation problem becomes a saddle point problem.
-
-
-\begin{equation}\label{SPPpart}
-\min_{x \in X} f(x) = \min_{x \in X}\max_{y \in Y} \{ G(x) + (Kx,y) - J(y)\} = \min_{x \in X} (G(x) + \max_{y \in Y} \{  (Kx,y) - J(y)\}) = \min_{x \in X} (G(x) + J^{*}(Kx))
-\end{equation}
-
-
-
-Where $J^{*}$ is the Fenchel conjugate of $J$.
-
+and if we seek the minimum of the of $f$ over the set $X$, then the optimisation problem transforms to a saddle point problem.
+\begin{align*}
+\min_{x \in X} f(x) &= \min_{x \in X}\max_{y \in Y} \{ G(x) + (Kx,y) - J(y)\} \\
+&= \min_{x \in X} (G(x) + \max_{y \in Y} \{  (Kx,y) - J(y)\})\\
+&= \min_{x \in X} (G(x) + J^{*}(Kx)) \numberthis \label{SPPpart}
+\end{align*}
+where $J^{*}$ is the Fenchel conjugate of $J$.
 
 We suppose that G is strongly convex, i.e. that:
-
 $$
 G(y) - G(x) - \langle \nabla G(x),y - x\rangle \leq \dfrac{L_{G}}{2} \lVert x - y \rVert_{2}^{2}
 $$
-
-
-
-
 This implies that strong duality holds (assumption A) holds).
 $$
 \min_{x \in X}\max_{y \in Y} \{ G(x) + (Kx,y) - J(y)\} = \min_{x \in X}\max_{y \in Y}\min_{x \in X} \{ G(x) + (Kx,y) - J(y)\}
