@@ -435,6 +435,7 @@ All of the basis functions above make intuitive sense, but what about the consta
 \section{Saddle Point Problems}
 
 A major class of problems that fall under the umbrella of optimzation is the solution of deterministic and stochastic Saddle Point Problems. We focus our work on primal \emph{Dual Methods} for a particular class of problems -- techniques which will later be applied to solution of approximate dynamic programming problems.
+That is why we try to formulate Dynamic Programming problem in the framework of the optimisation methods we study.
 
 First we investigate the stochastic minmax problem presented in\cite{NemirovskiRubinstein}. Then continue to look at an \emph{accelerated method}, in both the deterministic \cite{ChambollePock} and stochastic case \cite{ChenLanOuyang}, with the goal of applying these methods to approximate dynamic programming via the solution of linear programming problems.
 
@@ -862,6 +863,19 @@ $$
 g(\overline{x},\overline{y}) = \max_{(x,y)\in X \times Y} Q((\overline{x},\overline{y}),(x,y))
 $$
 
+
+In \cite{ChambollePock}, Chambolle and Pock proved the following:
+
+\begin{thm}
+If $\forall t$, $\tau_{t} = \tau$ and $\eta_{t} = \eta$ and $\tau\eta L_{K}^{2} \leq 1$ then:
+
+$$
+g(\overline{x},\overline{y}) \leq \dfrac{1}{N}(\sup_{(x,y)\in X \times Y} \dfrac{}{}\lVert x - x_{0} \rVert_{2}^{2} + \lVert y - y_{0} \rVert_{2}^{2} ) 
+$$
+
+In other words, the rate of convergence of the algorithm is $O(\dfrac{1}{N})$.
+
+\end{thm}
 
 
 \section{ An Accelerated Primal Dual Algorithm to solve Deterministic Saddle Point Problem: }
