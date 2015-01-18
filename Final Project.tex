@@ -516,6 +516,8 @@ return $\begin{pmatrix} x^{t} \\ y^{t} \end{pmatrix} = \dfrac{1}{t - \tau_{*}(t)
 \end{algorithm}
 \smallskip
 
+[THOMAS _ WHAT IS TAU???]
+
 Of course this algorithm depends on some parameters. The choice of those parameters influences the convergence properties of the algorithm. We analyze those parameter as well as the convergence of the algorithm in \ref{SASP_convergence}.
 
 \subsection{Analysis of the Convergence} \label{SASP_convergence}
@@ -557,7 +559,7 @@ where $C_{*}$ and $C^{*}$ being two arbitrary constants,
 \end{quote}
 then we acheive the result summarized in Theorem \ref{thm:SASP_varystep}. 
 \begin{thm} \label{thm:SASP_varystep}
-If assumptions $A)$, $B)$ and $C)$ hold and if we choose the step size in the SASP to be $\gamma_{t} = C_{t}t^{-\alpha}$, $\rho_{X} = D_{X}^{2}$, $\rho_{Y} = D_{Y}^{2}$ and $\tau^{*}(t) = \dfrac{t}{2}$, then
+If assumptions \ref{primal_ass1},\ref{primal_ass2},\ref{primal_ass3}, and \ref{primal_ass4} hold and if we choose the step size in the SASP to be $\gamma_{t} = C_{t}t^{-\alpha}$, $\rho_{X} = D_{X}^{2}$, $\rho_{Y} = D_{Y}^{2}$ and $\tau^{*}(t) = \dfrac{t}{2}$, then
 \begin{align*}
 \mathbb{E}[\varepsilon(x^{N},y^{N})] &\leq [D_{X}^{2}\rho_{X}^{-1} + D_{Y}^{2}\rho_{Y}^{-1} ][1 + \dfrac{1}{2C^{*}}\sum_{}^{N}\sup_{\tau \leq t} | C_{\tau} - C_{\tau-1}|]
 [\dfrac{N^{\alpha}}{C_{*}(N - \tau_{*}(N) + 1)}] \\ 
