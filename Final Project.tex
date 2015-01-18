@@ -171,6 +171,7 @@
 % useful for our project
 \DeclareMathOperator*{\argmin}{arg\,min}
 \newcommand\numberthis{\addtocounter{equation}{1}\tag{\theequation}}
+\newcommand{\eqnum}{\refstepcounter{equation}\textup{(\tagform{\theequation})}}
 
 
 \begin{document}
@@ -366,7 +367,7 @@ The above, in asymptotic terms, tells us that if we have a sample size on the or
 $$
 m = O(\frac{1}{\epsilon}(K \log \frac{1}{\epsilon} + \log \frac{1}{\delta}))
 $$
-then with probability at least $1-\delta$ we have that there is a $X \subset \sL$ such that $\psi(X) \geq 1 - \epsilon$ where every vector satisfying the constrants in $W$ (our sample of size $m$) also satisfies all the constraints in $Z$. That is, our sample of size $m$, with probability $1- \delta$, is near feasible. This is a very useful gaurantee because it is {\em independent} of the number of the constraints, and requires no knowledge about their structure.
+then with probability at least $1-\delta$ we have that there is a $X \subset \sL$ such that $\psi(X) \geq 1 - \epsilon$ where every vector satisfying the constrants in $W$ (our sample of size $m$) also satisfies all the constraints in $Z$. That is, our sample of size $m$, with probability $1- \delta$, is near feasible. This is a very useful gaurantee because it is {\em independent} of the number of the constraints in the ALP, and requires no knowledge about their structure.
 
 \subsection{Complexity of Approximation Quality}
 First a type of function is introduced which will be crucial to proving a bound on the quality of approximation. For any function $V: S \rightarrow \R$ define the scalar
@@ -434,115 +435,67 @@ All of the basis functions above make intuitive sense, but what about the consta
 \section{Saddle Point Problems}
 
 A major class of problems that fall under the umbrella of optimzation is the solution of deterministic and stochastic Saddle Point Problems. We focus our work on primal \emph{Dual Methods} for a particular class of problems -- techniques which will later be applied to solution of approximate dynamic programming problems.
-That is why we try to formulate Dynamic Programming problem in the framework of the optimisation methods we study.
 
-The procedure is as follows: first we investigate the stochastic minmax problem presented in\cite{NemirovskiRubinstein}. Then continue to look at an \emph{accelerated method}, in both the deterministic \cite{ChambollePock} and stochastic case \cite{ChenLanOuyang}, with the goal of applying these methods to approximate dynamic programming via the solution of linear programming problems.
+First we investigate the stochastic minmax problem presented in\cite{NemirovskiRubinstein}. Then continue to look at an \emph{accelerated method}, in both the deterministic \cite{ChambollePock} and stochastic case \cite{ChenLanOuyang}, with the goal of applying these methods to approximate dynamic programming via the solution of linear programming problems.
 
-\subsection{Setting}
+\subsection{The Framework}
 
-Given a function $\Phi$ we study the general problem (that we call this problem the Primal Problem):
+Given a function $\Phi$ we study the general problem (we call this problem the Primal Problem):
 $$
-\boxed{ (P): \min_{x \in X}\max_{y \in Y} \Phi(x,y) }
+\min_{x \in X}\max_{y \in Y} \Phi(x,y)
 $$
-
-Under the two following assumptions:
+under the assumptions
 
 \begin{itemize}
-\item A)$X$ and $Y$ are convex, compact sets.\\ $\Phi$ is convex in the first variable, concave in the second variable and Lipschitz on $X \times Y$
-\item B) $\Phi$ is not necessarily differentiable in each of its variables but $\partial_{x} \Phi(x,y) \neq  \emptyset $ and $\partial_{y} \Phi(x,y) \neq  \emptyset $
+\item $X$ and $Y$ are convex, compact sets.
+\item $\Phi$ is convex in the first variable, concave in the second variable and Lipschitz on $X \times Y$ \eqnum\label{primal_ass}
+\item $\Phi$ is not necessarily differentiable in each of its variables but $\partial_{x} \Phi(x,y) \neq  \emptyset $ and $\partial_{y} \Phi(x,y) \neq  \emptyset $
 %$\nabla_{x}\Phi(x,z)$ and $\nabla_{x}\Phi(x,y)$ are not directly accessibles (THEY DO NOT NECCESSARILY EXIST)
- we only have access to $g_{x}$ and $g_{y}$ such that $\forall (x,y) \in X \times Y$: \\
+and we only have access to $g_{x}$ and $g_{y}$ in so far as $\forall (x,y) \in X \times Y$ we know that
 $$\mathbb{E}[g_{x}(x,y)] \in \partial_{x} \Phi(x,y) $$
 $$\mathbb{E}[g_{y}(x,y)] \in \partial_{y} \Phi(x,y) $$
-
-Additionally, we suppose that:
-
+\end{itemize}
+Additionally, allow
 $$
 \mathcal{L} = D_{X} \sup_{(x,y) \in X \times Y} \sqrt{\mathbb{E}[\lVert g_{x}(x,y) \rVert^{2}]}+ D_{Y} \sup_{(x,y) \in X \times Y}\sqrt{\mathbb{E}[\lVert g_{y}(x,y) \rVert^{2}]} < \infty
 $$
+where $D_{X}$ and $D_{Y}$ are the euclidian diameters of $X$ and $Y$.
 
-Where $D_{X}$ and $D_{Y}$ are the euclidian diameters of $X$ and $Y$.
-
-\end{itemize}
-
-The first problem is called the \text{primal} problem. We also define the \text{dual} problem
-
+We also define the \text{dual} problem
 $$
 (D): \max_{y \in Y}\min_{x \in X} \Phi(x,y)
 $$
-
-Under Assumption A), by the \emph{MinMax Theorem}, we have 
-
+Under assumption \ref{primal_ass}, we have by the \emph{MinMax Theorem} that 
 $$
 \max_{y \in Y}\min_{x \in X} \Phi(x,y) = \min_{x \in X}\max_{y \in Y} \Phi(x,y)
 $$
-
-Looking for a solution of $(P)$ is equivalent to finding a solution of $(D)$.
-
-Now if we define:
+Finding a solution of $(P)$ is equivalent to finding a solution of $(D)$. If we further define
 \begin{itemize}
 \item $\overline{\Phi}(x) = \max_{y \in Y}\Phi(x,y)$
 \item $\underline{\Phi}(y) = \min_{x \in X}\Phi(x,y)$
 \end{itemize}
-
-
-
-We can set set up  an accuracy measure:
+then can set define  an accuracy measure:
 $$
-\boxed{ \varepsilon(x,y) = [\overline{\Phi}(x) - \min_{X}\overline{\Phi}] + [\max_{Y}\underline{\Phi} - \underline{\Phi}(y)] }
+\varepsilon(x,y) = [\overline{\Phi}(x) - \min_{X}\overline{\Phi}] + [\max_{Y}\underline{\Phi} - \underline{\Phi}(y)]
 $$
-
-Since $\min_{X}\overline{\Phi} = \max_{Y}\underline{\Phi}$ (by  strong duality) we have:
+Because $\min_{X}\overline{\Phi} = \max_{Y}\underline{\Phi}$ by strong duality, we have that
 $$
-\boxed{\varepsilon(x,y) = \overline{\Phi}(x) - \underline{\Phi}(y)}
+\varepsilon(x,y) = \overline{\Phi}(x) - \underline{\Phi}(y)
 $$
-
-If $(x^{*},y^{*})$ are the solution of the primal problem $(P)$,
-then $\forall x, y \in X \times Y$:
+If $(x^{*},y^{*})$ are the solution of the primal problem $(P)$, then $\forall x, y \in X \times Y$:
 $$
 \underline{\Phi}(y) \leq \Phi(x^{*},y^{*}) \leq \overline{\Phi}(x)
 $$
-
-With equality iff $x = x^{*}$ and $y = y^{*}$.
+where equality holds if and only if $x = x^{*}$ and $y = y^{*}$.
 
 \subsection{Motivations}
 
-We keep in mind one particular application.
-In Dynamic Programming (DP), the solution of the Bellman equation
+We keep in mind one particular application - Dynamic Programming (DP), the solution of the Bellman equation. Per the approach in previous sections, dynamic programs can be reduced to the solution of linear programs and like every Linear Program, this problem can be reduced to the resolution of a Saddle point Problem via its Lagrangian:
 $$
-V^{*}(s) = \max_{a \in \mathcal{A}} \{ R(s,a) + \gamma \sum_{s^{'} \in \mathcal{S}} \mathbb{P}(s^{'} | s,a)V^{*}(s^{'}) \}
+\min_{J^{*}}\max_{\lambda \geq 0}\{ \sum_{x \in S} J^{*}(x) + \sum_{a \in A_x} \lambda_{a,x}[g_a(x) + \gamma \sum_{x'} P_a(x,x')J^{*}(x') - J^{*}(x)] \}
 $$
-
-can be formulated under the form of a Linear Program.\\
-
-Where:
-\begin{itemize}
-\item $\mathcal{A}$ the set of possible actions.
-\item $\mathcal{S}$ the set of possible states.
-\item $\mathbb{P}(s^{'} | s,a)$ is the probability of transition from $s$ to $s^{'}$ when the action a is chosen.
-\end{itemize}
-
-
-
-Indeed $V^{*}$ can be seen as a vector of $\mathbb{R}^{|\mathcal{S}|}$, and in that case the previous equation becomes:
-\begin{equation}\label{MLSDP}
-\begin{array}{cl}
-\min_{V^{*} \in \mathbb{R}^{|\mathcal{S}|}} & \sum_{s} V^{*}(s)  \\
-\text{s.t.} & \forall (s, a)\in \mathcal{S} \times \mathcal{A}, \hspace{0.1cm} V^{*}(s) \geq R(s,a) + \gamma \sum_{s^{'}}\mathbb{P}(s^{'}| s,a )V^{*}(s^{'})\\
-\end{array}
-\end{equation}
-
-As every Linear Program, this problem can be reduced to the resolution of a Saddle point Problem via its Lagrangian:
-$$
-\min_{V^{*}}\max_{\lambda \geq 0}\{ \sum_{s} V^{*}(s) + \sum_{a,s}\lambda_{a,s}[R(s,a) + \gamma \sum_{s^{'}}\mathbb{P}(s^{'}| s,a )V^{*}(s^{'}) - V^{*}(s)] \}
-$$
-However, since the set of space and actions is usually extremely large, this Linear Program suffers from the curse of dimensionnality.
-
-One way to overcome this issue is to consider that $V^{*}(s)$ can be approximated by a linear combination of basis function.
-
-This approximation yields \emph{noise} in the value of all the functions and \emph{thus} yields noise in the approximation of the gradients.
-
-
+However, since the set of space and actions is usually extremely large, this linear program suffers from the curse of dimensionality if we want to either solve the dynamic program exactly or its approximation to a high degree of accuracy.
+% An approximation yields \emph{noise} in the value of all the functions and \emph{thus} yields noise in the approximation of the gradients -- so the stochastic methods may be applicable.
 
 \subsection{Algorithm: Stochastic Approximation for Saddle Point (SASP) Problems}
 
